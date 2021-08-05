@@ -25,13 +25,14 @@ public record TeacherServiceImpl(TeacherRepository teacherRepository) implements
         log.debug("TeacherServiceImpl.findById(id-{})", id);
 
         return teacherRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("Teacher with id - %d was not found", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("Teacher with id - %d was not found.", id)));
     }
 
     @Override
     public Teacher create(Teacher teacherWithoutId) {
         log.debug("TeacherServiceImpl.create({})", teacherWithoutId);
 
+        teacherWithoutId.setId(null);
         return teacherRepository.save(teacherWithoutId);
     }
 
@@ -47,6 +48,11 @@ public record TeacherServiceImpl(TeacherRepository teacherRepository) implements
     public void deleteById(Long id) {
         log.debug("TeacherServiceImpl.update(id-{})", id);
 
+        checkIfExists(id);
         teacherRepository.deleteById(id);
+    }
+
+    private void checkIfExists(Long id) {
+        findById(id);
     }
 }
