@@ -3,6 +3,7 @@ package com.komarov.webschool.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity(name = "Teacher")
 @Table(name = "teachers")
@@ -11,14 +12,14 @@ import javax.persistence.*;
 @ToString
 @Getter
 @Setter
-public class Teacher extends Person {
+public class Teacher extends Person implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public Teacher(String firstName, String middleName, String lastName, String patronymicName, String phoneNumber) {
-        super(firstName, middleName, lastName, patronymicName, phoneNumber);
+    public Teacher(String firstName, String middleName, String lastName, String phoneNumber) {
+        super(firstName, middleName, lastName, phoneNumber);
     }
 }

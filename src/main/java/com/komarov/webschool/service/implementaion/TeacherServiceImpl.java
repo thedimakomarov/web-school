@@ -11,48 +11,55 @@ import java.util.List;
 
 @Log4j2
 @Service
-public record TeacherServiceImpl(TeacherRepository teacherRepository) implements TeacherService {
+public record TeacherServiceImpl(TeacherRepository repository) implements TeacherService {
 
     @Override
     public List<Teacher> findAll() {
-        log.debug("TeacherServiceImpl.findAll()");
+        log.debug("TeacherService.findAll()");
 
-        return teacherRepository.findAll();
+        return repository.findAll();
     }
 
     @Override
     public Teacher findById(Long id) {
-        log.debug("TeacherServiceImpl.findById(id-{})", id);
+        log.debug("TeacherService.findById(id-{})", id);
 
-        return teacherRepository.findById(id)
+        return repository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Teacher with id - %d was not found.", id)));
     }
 
     @Override
-    public Teacher create(Teacher teacherWithoutId) {
-        log.debug("TeacherServiceImpl.create({})", teacherWithoutId);
+    public Teacher create(Teacher entityWithoutId) {
+        log.debug("TeacherService.create({})", entityWithoutId);
 
-        teacherWithoutId.setId(null);
-        return teacherRepository.save(teacherWithoutId);
+        entityWithoutId.setId(null);
+        return repository.save(entityWithoutId);
     }
 
     @Override
-    public Teacher update(Long id, Teacher teacherWithoutId) {
-        log.debug("TeacherServiceImpl.update(id-{},{})", id, teacherWithoutId);
+    public Teacher update(Long id, Teacher entityWithoutId) {
+        log.debug("TeacherService.update(id-{},{})", id, entityWithoutId);
 
-        teacherWithoutId.setId(id);
-        return teacherRepository.save(teacherWithoutId);
+        checkForExists(id);
+        entityWithoutId.setId(id);
+        return repository.save(entityWithoutId);
     }
 
     @Override
     public void deleteById(Long id) {
-        log.debug("TeacherServiceImpl.update(id-{})", id);
+        log.debug("TeacherService.update(id-{})", id);
 
-        checkIfExists(id);
-        teacherRepository.deleteById(id);
+        checkForExists(id);
+        repository.deleteById(id);
     }
 
-    private void checkIfExists(Long id) {
-        findById(id);
+    private void checkForExists(Long id) {
+        if(notExists(id)) {
+            throw new NotFoundException(String.format("Teacher with id - %d was not found.", id));
+        }
+    }
+
+    private boolean notExists(Long id) {
+        return !repository.existsById(id);
     }
 }

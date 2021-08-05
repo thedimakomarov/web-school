@@ -7,7 +7,7 @@ import java.util.List;
 public interface TeacherService {
     List<Teacher> findAll();
     Teacher findById(Long id);
-    Teacher create(Teacher teacherWithoutId);
-    Teacher update(Long id, Teacher teacherWithoutId);
+    Teacher create(Teacher entityWithoutId);
+    Teacher update(Long id, Teacher entityWithoutId);
     void deleteById(Long id);
 }

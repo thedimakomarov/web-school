@@ -13,7 +13,7 @@ import javax.persistence.MappedSuperclass;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class Person {
+public abstract class Person extends AuditEntity<String>{
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
@@ -22,9 +22,6 @@ public abstract class Person {
 
     @Column(name = "last_name", nullable = false)
     private String lastName;
-
-    @Column(name = "patronymic_name")
-    private String patronymicName;
 
     @Column(name = "phone_number")
     private String phoneNumber;
