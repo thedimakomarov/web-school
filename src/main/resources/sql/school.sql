@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS students
     CONSTRAINT group_fk
         FOREIGN KEY (group_id)
             REFERENCES groups (id)
+                ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS lessons
@@ -36,10 +37,12 @@ CREATE TABLE IF NOT EXISTS lessons
     teacher_id BIGINT NOT NULL,
     CONSTRAINT group_fk
         FOREIGN KEY (group_id)
-            REFERENCES groups(id),
+            REFERENCES groups(id)
+            ON DELETE SET NULL,
     CONSTRAINT teacher_fk
         FOREIGN KEY (teacher_id)
             REFERENCES teachers(id)
+                ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS marks (
@@ -49,10 +52,12 @@ CREATE TABLE IF NOT EXISTS marks (
     lesson_id BIGINT NOT NULL,
     CONSTRAINT student_fk
         FOREIGN KEY (student_id)
-            REFERENCES students(id),
+            REFERENCES students(id)
+                ON DELETE SET NULL,
     CONSTRAINT lesson_fk
         FOREIGN KEY (lesson_id)
             REFERENCES lessons(id)
+                ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS absentees (
@@ -62,10 +67,12 @@ CREATE TABLE IF NOT EXISTS absentees (
      lesson_id BIGINT NOT NULL,
      CONSTRAINT student_fk
          FOREIGN KEY (student_id)
-             REFERENCES students(id),
+             REFERENCES students(id)
+                ON DELETE SET NULL,
      CONSTRAINT lesson_fk
          FOREIGN KEY (lesson_id)
              REFERENCES lessons(id)
+                ON DELETE SET NULL
 );
 
 -- INSERT INTO teachers(first_name, middle_name, last_name, patronymic_name, phone_number)

@@ -2,7 +2,6 @@ package com.komarov.webschool.controller;
 
 import com.komarov.webschool.entity.Subject;
 import com.komarov.webschool.service.SubjectService;
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "subjects")
-@AllArgsConstructor
-public class SubjectController {
-    private final SubjectService service;
+public record SubjectController(SubjectService service) {
 
     @GetMapping
     public ResponseEntity<List<Subject>> findAll() {
