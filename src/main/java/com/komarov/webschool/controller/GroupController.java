@@ -11,8 +11,6 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "groups")
 public record GroupController(GroupService service) {
-    //TODO: create GroupDto
-    //TODO: add ExtraInformationException
 
     @GetMapping
     public ResponseEntity<List<GroupDto>> findAll() {

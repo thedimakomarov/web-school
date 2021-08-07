@@ -1,18 +1,16 @@
 package com.komarov.webschool.utility;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StringUtility {
 
     public static String makeFirstNotNullCharUpperCase(String line) {
-        if (line != null) {
-            return line.toUpperCase().charAt(0) + line.substring(1);
-        }
-        return null;
+        return line != null ? line.toUpperCase().charAt(0) + line.substring(1) : null;
     }
 
     public static String makeNotNullStringLowerCase(String line) {
-        if (line != null) {
-            return line.toLowerCase();
-        }
-        return null;
+        return line != null ? line.toLowerCase() : null;
     }
 }

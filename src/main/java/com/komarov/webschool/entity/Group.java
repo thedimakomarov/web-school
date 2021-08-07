@@ -30,7 +30,7 @@ public class Group extends AuditEntity<String> implements Serializable {
             CascadeType.PERSIST, CascadeType.REFRESH},
             mappedBy = "group",
             targetEntity = Student.class)
-    List<Student> students = new ArrayList<>();
+    private List<Student> students = new ArrayList<>();
 
     public Group(String name) {
         this.name = name;
