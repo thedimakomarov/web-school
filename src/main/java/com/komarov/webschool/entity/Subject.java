@@ -21,7 +21,7 @@ public class Subject extends AuditEntity<String> implements Serializable {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name;
 
     public Subject(String name) {

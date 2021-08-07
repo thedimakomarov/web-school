@@ -2,6 +2,7 @@ package com.komarov.webschool.service.implementaion;
 
 import com.komarov.webschool.dto.SubjectDto;
 import com.komarov.webschool.entity.Subject;
+import com.komarov.webschool.exception.DuplicateException;
 import com.komarov.webschool.exception.NotFoundException;
 import com.komarov.webschool.repository.SubjectRepository;
 import com.komarov.webschool.service.SubjectService;
@@ -14,6 +15,7 @@ import java.util.List;
 @Service
 public record SubjectServiceImpl(SubjectRepository subjectRepository) implements SubjectService {
     private static final String NOT_FOUND_MESSAGE = "Subject with id - %d was not found. Choose another id from the list of existing subjects.";
+    private static final String DUPLICATE_MESSAGE = "Subject with name - %s already exists. Choose another name for subject.";
 
     @Override
     public List<SubjectDto> findAll() {
@@ -33,6 +35,8 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
     @Override
     public SubjectDto create(SubjectDto subjectDtoWithoutId) {
         log.debug("SubjectService.create({})", subjectDtoWithoutId);
+
+        checkForDuplicate(subjectDtoWithoutId.getName());
 
         Subject subjectWithoutId = Subject.parse(subjectDtoWithoutId);
         return SubjectDto.parse(subjectRepository.save(subjectWithoutId));
@@ -61,6 +65,12 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
     private void checkForExists(Long id) {
         if(notExists(id)) {
             throw new NotFoundException(String.format(NOT_FOUND_MESSAGE, id));
+        }
+    }
+
+    private void checkForDuplicate(String name) {
+        if(subjectRepository.existsByName(name.toLowerCase())) {
+            throw new DuplicateException(String.format(DUPLICATE_MESSAGE, name));
         }
     }
 

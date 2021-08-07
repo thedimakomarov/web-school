@@ -1,5 +1,6 @@
 package com.komarov.webschool.controller;
 
+import com.komarov.webschool.exception.DuplicateException;
 import com.komarov.webschool.exception.NotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<String> handlerNotFoundException(NotFoundException e) {
+        return ResponseEntity.status(BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateException.class)
+    public ResponseEntity<String> handlerDuplicateException(DuplicateException e) {
         return ResponseEntity.status(BAD_REQUEST).body(e.getMessage());
     }
 

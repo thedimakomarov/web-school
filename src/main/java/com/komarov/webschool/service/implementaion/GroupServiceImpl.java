@@ -2,6 +2,7 @@ package com.komarov.webschool.service.implementaion;
 
 import com.komarov.webschool.dto.GroupDto;
 import com.komarov.webschool.entity.Group;
+import com.komarov.webschool.exception.DuplicateException;
 import com.komarov.webschool.exception.NotFoundException;
 import com.komarov.webschool.repository.GroupRepository;
 import com.komarov.webschool.service.GroupService;
@@ -15,6 +16,7 @@ import java.util.List;
 @Service
 public record GroupServiceImpl(GroupRepository groupRepository, StudentsService studentsService) implements GroupService {
     private static final String NOT_FOUND_ID_MESSAGE = "Group with id - %d was not found. Choose another id from the list of existing groups.";
+    private static final String DUPLICATE_MESSAGE = "Group with name - %s already exists. Choose another name for group.";
 
     @Override
     public List<GroupDto> findAll() {
@@ -34,6 +36,8 @@ public record GroupServiceImpl(GroupRepository groupRepository, StudentsService 
     @Override
     public GroupDto create(GroupDto groupDtoWithoutIdAndStudents) {
         log.debug("GroupService.create({})", groupDtoWithoutIdAndStudents);
+
+        checkForDuplicate(groupDtoWithoutIdAndStudents.getName());
 
         Group group = Group.parse(groupDtoWithoutIdAndStudents);
         return GroupDto.parse(groupRepository.save(group));
@@ -62,6 +66,12 @@ public record GroupServiceImpl(GroupRepository groupRepository, StudentsService 
     private void checkForExists(Long id) {
         if(notExists(id)) {
             throw new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id));
+        }
+    }
+
+    private void checkForDuplicate(String name) {
+        if(groupRepository.existsByName(name.toLowerCase())) {
+            throw new DuplicateException(String.format(DUPLICATE_MESSAGE, name));
         }
     }
 

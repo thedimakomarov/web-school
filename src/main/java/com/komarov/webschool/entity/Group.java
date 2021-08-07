@@ -22,7 +22,7 @@ public class Group extends AuditEntity<String> implements Serializable {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @OneToMany(
