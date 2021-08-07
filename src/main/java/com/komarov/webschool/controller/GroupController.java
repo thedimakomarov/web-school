@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -27,14 +28,14 @@ public record GroupController(GroupService service) {
     }
 
     @PostMapping
-    public ResponseEntity<GroupDto> create(@RequestBody GroupDto groupDtoWithoutIdAndStudents) {
+    public ResponseEntity<GroupDto> create(@Valid @RequestBody GroupDto groupDtoWithoutIdAndStudents) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(service.create(groupDtoWithoutIdAndStudents));
     }
 
     @PutMapping(path = "{id}")
-    public ResponseEntity<GroupDto> update(@PathVariable Long id, @RequestBody GroupDto groupDtoWithoutIdAndStudents) {
+    public ResponseEntity<GroupDto> update(@PathVariable Long id, @Valid @RequestBody GroupDto groupDtoWithoutIdAndStudents) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.update(id, groupDtoWithoutIdAndStudents));

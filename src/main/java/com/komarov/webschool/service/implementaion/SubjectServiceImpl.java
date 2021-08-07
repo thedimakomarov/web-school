@@ -14,7 +14,6 @@ import java.util.List;
 @Service
 public record SubjectServiceImpl(SubjectRepository subjectRepository) implements SubjectService {
     private static final String NOT_FOUND_MESSAGE = "Subject with id - %d was not found. Choose another id from the list of existing subjects.";
-    private static final String EXTRA_ID_MESSAGE = "Remove pair with key 'id' from body.";
 
     @Override
     public List<SubjectDto> findAll() {
@@ -35,8 +34,6 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
     public SubjectDto create(SubjectDto subjectDtoWithoutId) {
         log.debug("SubjectService.create({})", subjectDtoWithoutId);
 
-        checkId(subjectDtoWithoutId);
-
         Subject subjectWithoutId = Subject.parse(subjectDtoWithoutId);
         return SubjectDto.parse(subjectRepository.save(subjectWithoutId));
     }
@@ -46,7 +43,6 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
         log.debug("SubjectService.update(id-{},{})", id, subjectDtoWithoutId);
 
         checkForExists(id);
-        checkId(subjectDtoWithoutId);
 
         subjectDtoWithoutId.setId(id);
         Subject subjectWithoutId = Subject.parse(subjectDtoWithoutId);
@@ -58,18 +54,13 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
         log.debug("SubjectService.deleteById(id-{})", id);
 
         checkForExists(id);
+
         subjectRepository.deleteById(id);
     }
 
     private void checkForExists(Long id) {
         if(notExists(id)) {
             throw new NotFoundException(String.format(NOT_FOUND_MESSAGE, id));
-        }
-    }
-
-    private void checkId(SubjectDto subjectDto) {
-        if(subjectDto.getId() != null) {
-            throw new NotFoundException(EXTRA_ID_MESSAGE);
         }
     }
 

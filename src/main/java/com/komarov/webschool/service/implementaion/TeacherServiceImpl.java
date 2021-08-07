@@ -14,7 +14,6 @@ import java.util.List;
 @Service
 public record TeacherServiceImpl(TeacherRepository teacherRepository) implements TeacherService {
     private static final String NOT_FOUND_MESSAGE = "Teacher with id - %d was not found. Choose another id from the list of existing teachers.";
-    private static final String EXTRA_ID_MESSAGE = "Remove pair with key 'id' from body.";
 
     @Override
     public List<TeacherDto> findAll() {
@@ -35,8 +34,6 @@ public record TeacherServiceImpl(TeacherRepository teacherRepository) implements
     public TeacherDto create(TeacherDto teacherDtoWithoutId) {
         log.debug("TeacherService.create({})", teacherDtoWithoutId);
 
-        checkId(teacherDtoWithoutId);
-
         Teacher teacherWithoutId = Teacher.parse(teacherDtoWithoutId);
         return TeacherDto.parse(teacherRepository.save(teacherWithoutId));
     }
@@ -46,7 +43,6 @@ public record TeacherServiceImpl(TeacherRepository teacherRepository) implements
         log.debug("TeacherService.update(id-{},{})", id, teacherDtoWithoutId);
 
         checkForExists(id);
-        checkId(teacherDtoWithoutId);
 
         teacherDtoWithoutId.setId(id);
         Teacher teacherWithoutId = Teacher.parse(teacherDtoWithoutId);
@@ -58,18 +54,13 @@ public record TeacherServiceImpl(TeacherRepository teacherRepository) implements
         log.debug("TeacherService.update(id-{})", id);
 
         checkForExists(id);
+
         teacherRepository.deleteById(id);
     }
 
     private void checkForExists(Long id) {
         if(notExists(id)) {
             throw new NotFoundException(String.format(NOT_FOUND_MESSAGE, id));
-        }
-    }
-
-    private void checkId(TeacherDto teacherDto) {
-        if(teacherDto.getId() != null) {
-            throw new NotFoundException(EXTRA_ID_MESSAGE);
         }
     }
 

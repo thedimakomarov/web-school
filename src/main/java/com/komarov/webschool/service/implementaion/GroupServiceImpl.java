@@ -15,8 +15,6 @@ import java.util.List;
 @Service
 public record GroupServiceImpl(GroupRepository groupRepository, StudentsService studentsService) implements GroupService {
     private static final String NOT_FOUND_ID_MESSAGE = "Group with id - %d was not found. Choose another id from the list of existing groups.";
-    private static final String EXTRA_ID_MESSAGE = "Remove pair with key 'id' from body.";
-    private static final String EXTRA_STUDENTS_MESSAGE = "Remove all students from body. If you need set students in group, update student with needs group.";
 
     @Override
     public List<GroupDto> findAll() {
@@ -37,9 +35,6 @@ public record GroupServiceImpl(GroupRepository groupRepository, StudentsService 
     public GroupDto create(GroupDto groupDtoWithoutIdAndStudents) {
         log.debug("GroupService.create({})", groupDtoWithoutIdAndStudents);
 
-        checkId(groupDtoWithoutIdAndStudents);
-        checkStudents(groupDtoWithoutIdAndStudents);
-
         Group group = Group.parse(groupDtoWithoutIdAndStudents);
         return GroupDto.parse(groupRepository.save(group));
     }
@@ -49,11 +44,8 @@ public record GroupServiceImpl(GroupRepository groupRepository, StudentsService 
         log.debug("GroupService.update(id-{},{})", id, groupDtoWithoutIdAndStudents);
 
         checkForExists(id);
-        checkId(groupDtoWithoutIdAndStudents);
-        checkStudents(groupDtoWithoutIdAndStudents);
 
         groupDtoWithoutIdAndStudents.setId(id);
-
         Group group = Group.parse(groupDtoWithoutIdAndStudents);
         return GroupDto.parse(groupRepository.save(group));
     }
@@ -70,18 +62,6 @@ public record GroupServiceImpl(GroupRepository groupRepository, StudentsService 
     private void checkForExists(Long id) {
         if(notExists(id)) {
             throw new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id));
-        }
-    }
-
-    private void checkId(GroupDto groupDto) {
-        if(groupDto.getId() != null) {
-            throw new NotFoundException(EXTRA_ID_MESSAGE);
-        }
-    }
-
-    private void checkStudents(GroupDto groupDto) {
-        if(!groupDto.getStudents().isEmpty()) {
-            throw new NotFoundException(EXTRA_STUDENTS_MESSAGE);
         }
     }
 

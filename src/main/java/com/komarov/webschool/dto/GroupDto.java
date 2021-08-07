@@ -5,6 +5,8 @@ import com.komarov.webschool.entity.Student;
 import com.komarov.webschool.utility.StringUtility;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Null;
 import java.util.List;
 
 @Getter
@@ -13,8 +15,14 @@ import java.util.List;
 @EqualsAndHashCode
 @AllArgsConstructor
 public class GroupDto {
+
+    @Null(message = "should be null")
     private Long id;
+
+    @NotBlank(message = "should be not empty and not null")
     private String name;
+
+    @Null(message = "should be null. If you need set students in group, update student with needs group.")
     private List<InnerStudentDto> students;
 
     public static GroupDto parse(Group group) {

@@ -17,8 +17,6 @@ import java.util.List;
 public record StudentServiceImpl(StudentRepository studentRepository, GroupRepository groupRepository) implements StudentsService {
     private static final String NOT_FOUND_ID_MESSAGE = "Student with id - %d was not found. Choose another id from the list of existing students.";
     private static final String NOT_FOUND_GROUP_MESSAGE = "Student with group - %s was not found. Choose another group from the list of existing groups, or create new group with current name.";
-    private static final String EXTRA_ID_MESSAGE = "Remove pair with key 'id' from body.";
-    private static final String EXTRA_GROUP_MESSAGE = "Remove pair with group's key 'id' from body.";
 
     @Override
     public List<StudentDto> findAll() {
@@ -39,13 +37,11 @@ public record StudentServiceImpl(StudentRepository studentRepository, GroupRepos
     public StudentDto create(StudentDto studentDtoWithoutId) {
         log.debug("StudentService.create({})", studentDtoWithoutId);
 
-        checkId(studentDtoWithoutId);
-        checkGroupId(studentDtoWithoutId);
-
-        Student student = Student.parse(studentDtoWithoutId);
         String groupName = studentDtoWithoutId.getGroup().getName().toLowerCase();
         Group group = groupRepository.findByName(groupName)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_GROUP_MESSAGE, groupName)));
+
+        Student student = Student.parse(studentDtoWithoutId);
         student.setGroup(group);
         return StudentDto.parse(studentRepository.save(student));
     }
@@ -55,14 +51,13 @@ public record StudentServiceImpl(StudentRepository studentRepository, GroupRepos
         log.debug("StudentService.update(id-{},{})", id, studentDtoWithoutId);
 
         checkForExists(id);
-        checkId(studentDtoWithoutId);
-        checkGroupId(studentDtoWithoutId);
 
-        studentDtoWithoutId.setId(id);
-        Student student = Student.parse(studentDtoWithoutId);
         String groupName = studentDtoWithoutId.getGroup().getName().toLowerCase();
         Group group = groupRepository.findByName(groupName)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_GROUP_MESSAGE, groupName)));
+
+        studentDtoWithoutId.setId(id);
+        Student student = Student.parse(studentDtoWithoutId);
         student.setGroup(group);
         return StudentDto.parse(studentRepository.save(student));
     }
@@ -83,18 +78,6 @@ public record StudentServiceImpl(StudentRepository studentRepository, GroupRepos
     private void checkForExists(Long id) {
         if(notExists(id)) {
             throw new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id));
-        }
-    }
-
-    private void checkId(StudentDto studentDto) {
-        if(studentDto.getId() != null) {
-            throw new NotFoundException(EXTRA_ID_MESSAGE);
-        }
-    }
-
-    private void checkGroupId(StudentDto studentDto) {
-        if(studentDto.getGroup().getId() != null) {
-            throw new NotFoundException(EXTRA_GROUP_MESSAGE);
         }
     }
 

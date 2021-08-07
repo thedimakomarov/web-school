@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -27,14 +28,14 @@ public record TeacherController(TeacherService service) {
     }
 
     @PostMapping
-    public ResponseEntity<TeacherDto> create(@RequestBody TeacherDto teacherDtoWithoutId) {
+    public ResponseEntity<TeacherDto> create(@Valid @RequestBody TeacherDto teacherDtoWithoutId) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(service.create(teacherDtoWithoutId));
     }
 
     @PutMapping(path = "{id}")
-    public ResponseEntity<TeacherDto> update(@PathVariable Long id, @RequestBody TeacherDto teacherDtoWithoutId) {
+    public ResponseEntity<TeacherDto> update(@PathVariable Long id, @Valid @RequestBody TeacherDto teacherDtoWithoutId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.update(id, teacherDtoWithoutId));
