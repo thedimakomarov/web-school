@@ -12,22 +12,22 @@ import java.util.List;
 
 @Log4j2
 @Service
-public record TeacherServiceImpl(TeacherRepository repository) implements TeacherService {
+public record TeacherServiceImpl(TeacherRepository teacherRepository) implements TeacherService {
     private static final String NOT_FOUND_MESSAGE = "Teacher with id - %d was not found. Choose another id from the list of existing teachers.";
-    private static final String EXTRA_INFORMATION_MESSAGE = "Remove pair with key 'id' from body.";
+    private static final String EXTRA_ID_MESSAGE = "Remove pair with key 'id' from body.";
 
     @Override
     public List<TeacherDto> findAll() {
         log.debug("TeacherService.findAll()");
 
-        return TeacherDto.parse(repository.findAll());
+        return TeacherDto.parse(teacherRepository.findAll());
     }
 
     @Override
     public TeacherDto findById(Long id) {
         log.debug("TeacherService.findById(id-{})", id);
 
-        return TeacherDto.parse(repository.findById(id)
+        return TeacherDto.parse(teacherRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_MESSAGE, id))));
     }
 
@@ -38,7 +38,7 @@ public record TeacherServiceImpl(TeacherRepository repository) implements Teache
         checkId(teacherDtoWithoutId);
 
         Teacher teacherWithoutId = Teacher.parse(teacherDtoWithoutId);
-        return TeacherDto.parse(repository.save(teacherWithoutId));
+        return TeacherDto.parse(teacherRepository.save(teacherWithoutId));
     }
 
     @Override
@@ -50,7 +50,7 @@ public record TeacherServiceImpl(TeacherRepository repository) implements Teache
 
         teacherDtoWithoutId.setId(id);
         Teacher teacherWithoutId = Teacher.parse(teacherDtoWithoutId);
-        return TeacherDto.parse(repository.save(teacherWithoutId));
+        return TeacherDto.parse(teacherRepository.save(teacherWithoutId));
     }
 
     @Override
@@ -58,7 +58,7 @@ public record TeacherServiceImpl(TeacherRepository repository) implements Teache
         log.debug("TeacherService.update(id-{})", id);
 
         checkForExists(id);
-        repository.deleteById(id);
+        teacherRepository.deleteById(id);
     }
 
     private void checkForExists(Long id) {
@@ -69,11 +69,11 @@ public record TeacherServiceImpl(TeacherRepository repository) implements Teache
 
     private void checkId(TeacherDto teacherDto) {
         if(teacherDto.getId() != null) {
-            throw new NotFoundException(EXTRA_INFORMATION_MESSAGE);
+            throw new NotFoundException(EXTRA_ID_MESSAGE);
         }
     }
 
     private boolean notExists(Long id) {
-        return !repository.existsById(id);
+        return !teacherRepository.existsById(id);
     }
 }

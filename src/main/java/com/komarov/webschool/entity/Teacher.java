@@ -1,6 +1,7 @@
 package com.komarov.webschool.entity;
 
 import com.komarov.webschool.dto.TeacherDto;
+import com.komarov.webschool.utility.StringUtility;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.util.List;
 @Entity(name = "Teacher")
 @Table(name = "teachers")
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = {"id"}, callSuper = true)
 @ToString
 @Getter
 @Setter
@@ -35,11 +36,13 @@ public class Teacher extends Person implements Serializable {
     }
 
     public static Teacher parse(TeacherDto teacherDto) {
-        return new Teacher(teacherDto.getId(),
-                teacherDto.getFirstName(),
-                teacherDto.getMiddleName(),
-                teacherDto.getLastName(),
-                teacherDto.getPhoneNumber());
+        return new Teacher(
+                teacherDto.getId(),
+                StringUtility.makeNotNullStringLowerCase(teacherDto.getFirstName()),
+                StringUtility.makeNotNullStringLowerCase(teacherDto.getMiddleName()),
+                StringUtility.makeNotNullStringLowerCase(teacherDto.getLastName()),
+                teacherDto.getPhoneNumber()
+        );
     }
 
     public static List<Teacher> parse(List<TeacherDto> teachersDto) {

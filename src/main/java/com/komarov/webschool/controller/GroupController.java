@@ -1,6 +1,6 @@
 package com.komarov.webschool.controller;
 
-import com.komarov.webschool.entity.Group;
+import com.komarov.webschool.dto.GroupDto;
 import com.komarov.webschool.service.GroupService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,31 +15,31 @@ public record GroupController(GroupService service) {
     //TODO: add ExtraInformationException
 
     @GetMapping
-    public ResponseEntity<List<Group>> findAll() {
+    public ResponseEntity<List<GroupDto>> findAll() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.findAll());
     }
 
     @GetMapping(path = "{id}")
-    public ResponseEntity<Group> findById(@PathVariable Long id) {
+    public ResponseEntity<GroupDto> findById(@PathVariable Long id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Group> create(@RequestBody Group entityWithoutId) {//TODO: change name
+    public ResponseEntity<GroupDto> create(@RequestBody GroupDto groupDtoWithoutIdAndStudents) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(service.create(entityWithoutId));
+                .body(service.create(groupDtoWithoutIdAndStudents));
     }
 
     @PutMapping(path = "{id}")
-    public ResponseEntity<Group> update(@PathVariable Long id, @RequestBody Group entityWithoutId) {//TODO: change name
+    public ResponseEntity<GroupDto> update(@PathVariable Long id, @RequestBody GroupDto groupDtoWithoutIdAndStudents) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.update(id, entityWithoutId));
+                .body(service.update(id, groupDtoWithoutIdAndStudents));
     }
 
     @DeleteMapping(path = "{id}")

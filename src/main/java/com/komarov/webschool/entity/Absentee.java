@@ -13,7 +13,7 @@ import javax.persistence.Id;
 //@Entity(name = "Absentee")
 //@Table(name = "absentees")
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = {"id"}, callSuper = true)
 @Getter
 @Setter
 public class Absentee extends Note {

@@ -1,6 +1,7 @@
 package com.komarov.webschool.dto;
 
 import com.komarov.webschool.entity.Subject;
+import com.komarov.webschool.utility.StringUtility;
 import lombok.*;
 
 import java.util.List;
@@ -15,8 +16,10 @@ public class SubjectDto {
     private String name;
 
     public static SubjectDto parse(Subject subject) {
-        return new SubjectDto(subject.getId(),
-                subject.getName());
+        return new SubjectDto(
+                subject.getId(),
+                StringUtility.makeFirstNotNullCharUpperCase(subject.getName())
+        );
     }
 
     public static List<SubjectDto> parse(List<Subject> subjects) {
@@ -24,4 +27,5 @@ public class SubjectDto {
                 .map(SubjectDto::parse)
                 .toList();
     }
+
 }

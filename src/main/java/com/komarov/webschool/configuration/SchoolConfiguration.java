@@ -28,12 +28,12 @@ public class SchoolConfiguration {
             Teacher zhess = new Teacher("zhess", "black", "000000000");
             teacherRepository.saveAll(List.of(arnold, debbie, zhess));
 
-            Subject algebra = new Subject("Algebra");
-            Subject geography = new Subject("Geography");
-            Subject english = new Subject("English");
+            Subject algebra = new Subject("algebra");
+            Subject geography = new Subject("geography");
+            Subject english = new Subject("english");
             subjectRepository.saveAll(List.of(algebra, geography, english));
 
-            Group alfa = new Group("Alfa");
+            Group alfa = new Group("alfa");
 
             Student alex = new Student("alex","fitzgerald","000000000");
             alex.setGroup(alfa);

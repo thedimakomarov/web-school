@@ -12,22 +12,22 @@ import java.util.List;
 
 @Log4j2
 @Service
-public record SubjectServiceImpl(SubjectRepository repository) implements SubjectService {
+public record SubjectServiceImpl(SubjectRepository subjectRepository) implements SubjectService {
     private static final String NOT_FOUND_MESSAGE = "Subject with id - %d was not found. Choose another id from the list of existing subjects.";
-    private static final String EXTRA_INFORMATION_MESSAGE = "Remove pair with key 'id' from body.";
+    private static final String EXTRA_ID_MESSAGE = "Remove pair with key 'id' from body.";
 
     @Override
     public List<SubjectDto> findAll() {
         log.debug("SubjectServiceImpl.findAll()");
 
-        return SubjectDto.parse(repository.findAll());
+        return SubjectDto.parse(subjectRepository.findAll());
     }
 
     @Override
     public SubjectDto findById(Long id) {
         log.debug("SubjectService.findById(id-{})", id);
 
-        return SubjectDto.parse(repository.findById(id)
+        return SubjectDto.parse(subjectRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_MESSAGE, id))));
     }
 
@@ -38,7 +38,7 @@ public record SubjectServiceImpl(SubjectRepository repository) implements Subjec
         checkId(subjectDtoWithoutId);
 
         Subject subjectWithoutId = Subject.parse(subjectDtoWithoutId);
-        return SubjectDto.parse(repository.save(subjectWithoutId));
+        return SubjectDto.parse(subjectRepository.save(subjectWithoutId));
     }
 
     @Override
@@ -50,7 +50,7 @@ public record SubjectServiceImpl(SubjectRepository repository) implements Subjec
 
         subjectDtoWithoutId.setId(id);
         Subject subjectWithoutId = Subject.parse(subjectDtoWithoutId);
-        return SubjectDto.parse(repository.save(subjectWithoutId));
+        return SubjectDto.parse(subjectRepository.save(subjectWithoutId));
     }
 
     @Override
@@ -58,7 +58,7 @@ public record SubjectServiceImpl(SubjectRepository repository) implements Subjec
         log.debug("SubjectService.deleteById(id-{})", id);
 
         checkForExists(id);
-        repository.deleteById(id);
+        subjectRepository.deleteById(id);
     }
 
     private void checkForExists(Long id) {
@@ -69,11 +69,11 @@ public record SubjectServiceImpl(SubjectRepository repository) implements Subjec
 
     private void checkId(SubjectDto subjectDto) {
         if(subjectDto.getId() != null) {
-            throw new NotFoundException(EXTRA_INFORMATION_MESSAGE);
+            throw new NotFoundException(EXTRA_ID_MESSAGE);
         }
     }
 
     private boolean notExists(Long id) {
-        return !repository.existsById(id);
+        return !subjectRepository.existsById(id);
     }
 }

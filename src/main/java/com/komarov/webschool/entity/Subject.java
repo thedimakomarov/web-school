@@ -1,6 +1,7 @@
 package com.komarov.webschool.entity;
 
 import com.komarov.webschool.dto.SubjectDto;
+import com.komarov.webschool.utility.StringUtility;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.util.List;
 @Entity(name = "Subject")
 @Table(name = "subjects")
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = {"id"}, callSuper = true)
 @ToString
 @Getter
 @Setter
@@ -33,8 +34,10 @@ public class Subject extends AuditEntity<String> implements Serializable {
     }
 
     public static Subject parse(SubjectDto subjectDto) {
-        return new Subject(subjectDto.getId(),
-                subjectDto.getName());
+        return new Subject(
+                subjectDto.getId(),
+                StringUtility.makeNotNullStringLowerCase(subjectDto.getName())
+        );
     }
 
     public static List<Subject> parse(List<SubjectDto> subjectsDto) {

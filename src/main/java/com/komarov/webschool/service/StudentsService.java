@@ -1,14 +1,14 @@
 package com.komarov.webschool.service;
 
-import com.komarov.webschool.entity.Student;
+import com.komarov.webschool.dto.StudentDto;
 
 import java.util.List;
 
 public interface StudentsService {
-    List<Student> findAll();
-    Student findById(Long id);
-    Student create(Student entityWithoutId);//TODO: change name
-    Student update(Long id, Student entityWithoutId);//TODO: change name
+    List<StudentDto> findAll();
+    StudentDto findById(Long id);
+    StudentDto create(StudentDto studentDtoWithoutId);
+    StudentDto update(Long id, StudentDto studentDtoWithoutId);
     void deleteById(Long id);
     void eliminateAllFromGroup(Long id);
 }

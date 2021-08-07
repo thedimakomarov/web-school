@@ -1,5 +1,7 @@
 package com.komarov.webschool.entity;
 
+import com.komarov.webschool.dto.GroupDto;
+import com.komarov.webschool.utility.StringUtility;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString(exclude = {"students"})
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = {"id"}, callSuper = true)
 @NoArgsConstructor
 public class Group extends AuditEntity<String> implements Serializable {
     @Id
@@ -34,8 +36,21 @@ public class Group extends AuditEntity<String> implements Serializable {
         this.name = name;
     }
 
-    public Group(String name, List<Student> students) {
-        this(name);
-        this.students = students;
+    public Group(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public static Group parse(GroupDto groupDto) {
+        return new Group(
+                groupDto.getId(),
+                StringUtility.makeNotNullStringLowerCase(groupDto.getName())
+        );
+    }
+
+    public static List<Group> parse(List<GroupDto> groupsDto) {
+        return groupsDto.stream()
+                .map(Group::parse)
+                .toList();
     }
 }

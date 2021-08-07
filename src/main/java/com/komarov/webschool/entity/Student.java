@@ -1,6 +1,8 @@
 package com.komarov.webschool.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.komarov.webschool.dto.StudentDto;
+import com.komarov.webschool.utility.StringUtility;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,13 +10,14 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
 @Entity(name = "Student")
 @Table(name = "students")
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = {"id"}, callSuper = true)
 @Getter
 @Setter
 public class Student extends Person implements Serializable {
@@ -32,6 +35,11 @@ public class Student extends Person implements Serializable {
     @JsonIgnore
     private Group group;
 
+    public Student(Long id, String firstName, String middleName, String lastName, String phoneNumber) {
+        super(firstName, middleName, lastName, phoneNumber);
+        this.id = id;
+    }
+
     public Student(String firstName, String middleName, String lastName, String phoneNumber) {
         super(firstName, middleName, lastName, phoneNumber);
     }
@@ -46,5 +54,21 @@ public class Student extends Person implements Serializable {
                 "id=" + id +
                 ", group=" + group.getName() +
                 '}';
+    }
+
+    public static Student parse(StudentDto studentDto) {
+        return new Student(
+                studentDto.getId(),
+                StringUtility.makeNotNullStringLowerCase(studentDto.getFirstName()),
+                StringUtility.makeNotNullStringLowerCase(studentDto.getMiddleName()),
+                StringUtility.makeNotNullStringLowerCase(studentDto.getLastName()),
+                studentDto.getPhoneNumber()
+        );
+    }
+
+    public static List<Student> parse(List<StudentDto> studentsDto) {
+        return studentsDto.stream()
+                .map(Student::parse)
+                .toList();
     }
 }
