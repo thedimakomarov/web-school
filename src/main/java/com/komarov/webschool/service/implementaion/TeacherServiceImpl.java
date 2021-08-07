@@ -1,5 +1,6 @@
 package com.komarov.webschool.service.implementaion;
 
+import com.komarov.webschool.dto.TeacherDto;
 import com.komarov.webschool.entity.Teacher;
 import com.komarov.webschool.exception.NotFoundException;
 import com.komarov.webschool.repository.TeacherRepository;
@@ -12,37 +13,44 @@ import java.util.List;
 @Log4j2
 @Service
 public record TeacherServiceImpl(TeacherRepository repository) implements TeacherService {
+    private static final String NOT_FOUND_MESSAGE = "Teacher with id - %d was not found. Choose another id from the list of existing students.";
+    private static final String EXTRA_INFORMATION_MESSAGE = "Remove pair with key 'id' from body.";
 
     @Override
-    public List<Teacher> findAll() {
+    public List<TeacherDto> findAll() {
         log.debug("TeacherService.findAll()");
 
-        return repository.findAll();
+        return TeacherDto.parse(repository.findAll());
     }
 
     @Override
-    public Teacher findById(Long id) {
+    public TeacherDto findById(Long id) {
         log.debug("TeacherService.findById(id-{})", id);
 
-        return repository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("Teacher with id - %d was not found.", id)));
+        return TeacherDto.parse(repository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_MESSAGE, id))));
     }
 
     @Override
-    public Teacher create(Teacher entityWithoutId) {
-        log.debug("TeacherService.create({})", entityWithoutId);
+    public TeacherDto create(TeacherDto teacherDtoWithoutId) {
+        log.debug("TeacherService.create({})", teacherDtoWithoutId);
 
-        entityWithoutId.setId(null);
-        return repository.save(entityWithoutId);
+        checkId(teacherDtoWithoutId);
+
+        Teacher teacherWithoutId = Teacher.parse(teacherDtoWithoutId);
+        return TeacherDto.parse(repository.save(teacherWithoutId));
     }
 
     @Override
-    public Teacher update(Long id, Teacher entityWithoutId) {
-        log.debug("TeacherService.update(id-{},{})", id, entityWithoutId);
+    public TeacherDto update(Long id, TeacherDto teacherDtoWithoutId) {
+        log.debug("TeacherService.update(id-{},{})", id, teacherDtoWithoutId);
 
         checkForExists(id);
-        entityWithoutId.setId(id);
-        return repository.save(entityWithoutId);
+        checkId(teacherDtoWithoutId);
+
+        teacherDtoWithoutId.setId(id);
+        Teacher teacherWithoutId = Teacher.parse(teacherDtoWithoutId);
+        return TeacherDto.parse(repository.save(teacherWithoutId));
     }
 
     @Override
@@ -55,7 +63,13 @@ public record TeacherServiceImpl(TeacherRepository repository) implements Teache
 
     private void checkForExists(Long id) {
         if(notExists(id)) {
-            throw new NotFoundException(String.format("Teacher with id - %d was not found.", id));
+            throw new NotFoundException(String.format(NOT_FOUND_MESSAGE, id));
+        }
+    }
+
+    private void checkId(TeacherDto teacherDto) {
+        if(teacherDto.getId() != null) {
+            throw new NotFoundException(EXTRA_INFORMATION_MESSAGE);
         }
     }
 

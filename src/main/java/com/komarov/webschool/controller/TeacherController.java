@@ -1,6 +1,6 @@
 package com.komarov.webschool.controller;
 
-import com.komarov.webschool.entity.Teacher;
+import com.komarov.webschool.dto.TeacherDto;
 import com.komarov.webschool.service.TeacherService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,31 +13,31 @@ import java.util.List;
 public record TeacherController(TeacherService service) {
 
     @GetMapping
-    public ResponseEntity<List<Teacher>> findAll() {
+    public ResponseEntity<List<TeacherDto>> findAll() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.findAll());
     }
 
     @GetMapping(path = "{id}")
-    public ResponseEntity<Teacher> findById(@PathVariable Long id) {
+    public ResponseEntity<TeacherDto> findById(@PathVariable Long id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Teacher> create(@RequestBody Teacher entityWithoutId) {
+    public ResponseEntity<TeacherDto> create(@RequestBody TeacherDto teacherWithoutId) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(service.create(entityWithoutId));
+                .body(service.create(teacherWithoutId));
     }
 
     @PutMapping(path = "{id}")
-    public ResponseEntity<Teacher> update(@PathVariable Long id, @RequestBody Teacher entityWithoutId) {
+    public ResponseEntity<TeacherDto> update(@PathVariable Long id, @RequestBody TeacherDto teacherWithoutId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.update(id, entityWithoutId));
+                .body(service.update(id, teacherWithoutId));
     }
 
     @DeleteMapping(path = "{id}")
