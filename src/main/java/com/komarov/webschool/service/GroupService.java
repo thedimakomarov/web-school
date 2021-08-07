@@ -7,7 +7,7 @@ import java.util.List;
 public interface GroupService {
     List<Group> findAll();
     Group findById(Long id);
-    Group create(Group entityWithoutId);
-    Group update(Long id, Group entityWithoutId);
+    Group create(Group entityWithoutId);//TODO: change name
+    Group update(Long id, Group entityWithoutId);//TODO: change name
     void deleteById(Long id);
 }

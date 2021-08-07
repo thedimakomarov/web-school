@@ -25,8 +25,8 @@ public class TeacherDto {
                 teacher.getPhoneNumber());
     }
 
-    public static List<TeacherDto> parse(List<Teacher> teacher) {
-        return teacher.stream()
+    public static List<TeacherDto> parse(List<Teacher> teachers) {
+        return teachers.stream()
                 .map(TeacherDto::parse)
                 .toList();
     }

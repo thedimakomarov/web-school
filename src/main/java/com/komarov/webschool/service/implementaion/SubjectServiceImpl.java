@@ -1,5 +1,6 @@
 package com.komarov.webschool.service.implementaion;
 
+import com.komarov.webschool.dto.SubjectDto;
 import com.komarov.webschool.entity.Subject;
 import com.komarov.webschool.exception.NotFoundException;
 import com.komarov.webschool.repository.SubjectRepository;
@@ -12,37 +13,44 @@ import java.util.List;
 @Log4j2
 @Service
 public record SubjectServiceImpl(SubjectRepository repository) implements SubjectService {
+    private static final String NOT_FOUND_MESSAGE = "Subject with id - %d was not found. Choose another id from the list of existing subjects.";
+    private static final String EXTRA_INFORMATION_MESSAGE = "Remove pair with key 'id' from body.";
 
     @Override
-    public List<Subject> findAll() {
+    public List<SubjectDto> findAll() {
         log.debug("SubjectServiceImpl.findAll()");
 
-        return repository.findAll();
+        return SubjectDto.parse(repository.findAll());
     }
 
     @Override
-    public Subject findById(Long id) {
+    public SubjectDto findById(Long id) {
         log.debug("SubjectService.findById(id-{})", id);
 
-        return repository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("Subject with id - %d was not found.", id)));
+        return SubjectDto.parse(repository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_MESSAGE, id))));
     }
 
     @Override
-    public Subject create(Subject entityWithoutId) {
-        log.debug("SubjectService.create({})", entityWithoutId);
+    public SubjectDto create(SubjectDto subjectDtoWithoutId) {
+        log.debug("SubjectService.create({})", subjectDtoWithoutId);
 
-        entityWithoutId.setId(null);
-        return repository.save(entityWithoutId);
+        checkId(subjectDtoWithoutId);
+
+        Subject subjectWithoutId = Subject.parse(subjectDtoWithoutId);
+        return SubjectDto.parse(repository.save(subjectWithoutId));
     }
 
     @Override
-    public Subject update(Long id, Subject entityWithoutId) {
-        log.debug("SubjectService.update(id-{},{})", id, entityWithoutId);
+    public SubjectDto update(Long id, SubjectDto subjectDtoWithoutId) {
+        log.debug("SubjectService.update(id-{},{})", id, subjectDtoWithoutId);
 
         checkForExists(id);
-        entityWithoutId.setId(id);
-        return repository.save(entityWithoutId);
+        checkId(subjectDtoWithoutId);
+
+        subjectDtoWithoutId.setId(id);
+        Subject subjectWithoutId = Subject.parse(subjectDtoWithoutId);
+        return SubjectDto.parse(repository.save(subjectWithoutId));
     }
 
     @Override
@@ -55,7 +63,13 @@ public record SubjectServiceImpl(SubjectRepository repository) implements Subjec
 
     private void checkForExists(Long id) {
         if(notExists(id)) {
-            throw new NotFoundException(String.format("Subject with id - %d was not found.", id));
+            throw new NotFoundException(String.format(NOT_FOUND_MESSAGE, id));
+        }
+    }
+
+    private void checkId(SubjectDto subjectDto) {
+        if(subjectDto.getId() != null) {
+            throw new NotFoundException(EXTRA_INFORMATION_MESSAGE);
         }
     }
 

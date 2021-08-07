@@ -11,6 +11,8 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "groups")
 public record GroupController(GroupService service) {
+    //TODO: create GroupDto
+    //TODO: add ExtraInformationException
 
     @GetMapping
     public ResponseEntity<List<Group>> findAll() {
@@ -27,14 +29,14 @@ public record GroupController(GroupService service) {
     }
 
     @PostMapping
-    public ResponseEntity<Group> create(@RequestBody Group entityWithoutId) {
+    public ResponseEntity<Group> create(@RequestBody Group entityWithoutId) {//TODO: change name
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(service.create(entityWithoutId));
     }
 
     @PutMapping(path = "{id}")
-    public ResponseEntity<Group> update(@PathVariable Long id, @RequestBody Group entityWithoutId) {
+    public ResponseEntity<Group> update(@PathVariable Long id, @RequestBody Group entityWithoutId) {//TODO: change name
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.update(id, entityWithoutId));

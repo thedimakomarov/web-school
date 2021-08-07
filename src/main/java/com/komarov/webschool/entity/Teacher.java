@@ -42,8 +42,8 @@ public class Teacher extends Person implements Serializable {
                 teacherDto.getPhoneNumber());
     }
 
-    public static List<Teacher> parse(List<TeacherDto> teacherDto) {
-        return teacherDto.stream()
+    public static List<Teacher> parse(List<TeacherDto> teachersDto) {
+        return teachersDto.stream()
                 .map(Teacher::parse)
                 .toList();
     }

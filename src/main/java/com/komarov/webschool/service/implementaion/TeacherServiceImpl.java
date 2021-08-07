@@ -13,7 +13,7 @@ import java.util.List;
 @Log4j2
 @Service
 public record TeacherServiceImpl(TeacherRepository repository) implements TeacherService {
-    private static final String NOT_FOUND_MESSAGE = "Teacher with id - %d was not found. Choose another id from the list of existing students.";
+    private static final String NOT_FOUND_MESSAGE = "Teacher with id - %d was not found. Choose another id from the list of existing teachers.";
     private static final String EXTRA_INFORMATION_MESSAGE = "Remove pair with key 'id' from body.";
 
     @Override

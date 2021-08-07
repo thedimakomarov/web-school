@@ -1,9 +1,11 @@
 package com.komarov.webschool.entity;
 
+import com.komarov.webschool.dto.SubjectDto;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity(name = "Subject")
 @Table(name = "subjects")
@@ -23,5 +25,21 @@ public class Subject extends AuditEntity<String> implements Serializable {
 
     public Subject(String name) {
         this.name = name;
+    }
+
+    private Subject(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public static Subject parse(SubjectDto subjectDto) {
+        return new Subject(subjectDto.getId(),
+                subjectDto.getName());
+    }
+
+    public static List<Subject> parse(List<SubjectDto> subjectsDto) {
+        return subjectsDto.stream()
+                .map(Subject::parse)
+                .toList();
     }
 }

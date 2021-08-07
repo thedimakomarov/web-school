@@ -11,6 +11,8 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "students")
 public record StudentController(StudentsService service) {
+    //TODO: create StudentDto
+    //TODO: add ExtraInformationException
 
     @GetMapping
     public ResponseEntity<List<Student>> findAll() {
@@ -27,14 +29,14 @@ public record StudentController(StudentsService service) {
     }
 
     @PostMapping
-    public ResponseEntity<Student> create(@RequestBody Student entityWithoutId) {
+    public ResponseEntity<Student> create(@RequestBody Student entityWithoutId) {//TODO: change name
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(service.create(entityWithoutId));
     }
 
     @PutMapping(path = "{id}")
-    public ResponseEntity<Student> update(@PathVariable Long id, @RequestBody Student entityWithoutId) {
+    public ResponseEntity<Student> update(@PathVariable Long id, @RequestBody Student entityWithoutId) {//TODO: change name
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.update(id, entityWithoutId));

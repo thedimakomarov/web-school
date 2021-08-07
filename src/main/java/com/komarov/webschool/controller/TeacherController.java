@@ -27,17 +27,17 @@ public record TeacherController(TeacherService service) {
     }
 
     @PostMapping
-    public ResponseEntity<TeacherDto> create(@RequestBody TeacherDto teacherWithoutId) {
+    public ResponseEntity<TeacherDto> create(@RequestBody TeacherDto teacherDtoWithoutId) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(service.create(teacherWithoutId));
+                .body(service.create(teacherDtoWithoutId));
     }
 
     @PutMapping(path = "{id}")
-    public ResponseEntity<TeacherDto> update(@PathVariable Long id, @RequestBody TeacherDto teacherWithoutId) {
+    public ResponseEntity<TeacherDto> update(@PathVariable Long id, @RequestBody TeacherDto teacherDtoWithoutId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.update(id, teacherWithoutId));
+                .body(service.update(id, teacherDtoWithoutId));
     }
 
     @DeleteMapping(path = "{id}")

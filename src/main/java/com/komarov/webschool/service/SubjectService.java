@@ -1,13 +1,13 @@
 package com.komarov.webschool.service;
 
-import com.komarov.webschool.entity.Subject;
+import com.komarov.webschool.dto.SubjectDto;
 
 import java.util.List;
 
 public interface SubjectService {
-    List<Subject> findAll();
-    Subject findById(Long id);
-    Subject create(Subject entityWithoutId);
-    Subject update(Long id, Subject entityWithoutId);
+    List<SubjectDto> findAll();
+    SubjectDto findById(Long id);
+    SubjectDto create(SubjectDto subjectDtoWithoutId);
+    SubjectDto update(Long id, SubjectDto subjectDtoWithoutId);
     void deleteById(Long id);
 }
