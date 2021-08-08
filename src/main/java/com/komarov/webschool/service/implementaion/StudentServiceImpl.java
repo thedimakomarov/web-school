@@ -1,5 +1,6 @@
 package com.komarov.webschool.service.implementaion;
 
+import com.komarov.webschool.dto.InnerGroupDto;
 import com.komarov.webschool.dto.StudentDto;
 import com.komarov.webschool.entity.Group;
 import com.komarov.webschool.entity.Student;
@@ -37,9 +38,7 @@ public record StudentServiceImpl(StudentRepository studentRepository, GroupRepos
     public StudentDto create(StudentDto studentDtoWithoutId) {
         log.debug("StudentService.create({})", studentDtoWithoutId);
 
-        String groupName = studentDtoWithoutId.getGroup().getName().toLowerCase();
-        Group group = groupRepository.findByName(groupName)
-                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_GROUP_MESSAGE, groupName)));
+        Group group = getGroupIfPresentOrThrowException(studentDtoWithoutId.getGroup());
 
         Student student = Student.parse(studentDtoWithoutId);
         student.setGroup(group);
@@ -52,9 +51,7 @@ public record StudentServiceImpl(StudentRepository studentRepository, GroupRepos
 
         checkForExists(id);
 
-        String groupName = studentDtoWithoutId.getGroup().getName().toLowerCase();
-        Group group = groupRepository.findByName(groupName)
-                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_GROUP_MESSAGE, groupName)));
+        Group group = getGroupIfPresentOrThrowException(studentDtoWithoutId.getGroup());
 
         studentDtoWithoutId.setId(id);
         Student student = Student.parse(studentDtoWithoutId);
@@ -79,6 +76,15 @@ public record StudentServiceImpl(StudentRepository studentRepository, GroupRepos
         if(notExists(id)) {
             throw new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id));
         }
+    }
+
+    private Group getGroupIfPresentOrThrowException(InnerGroupDto innerGroupDto) {
+        if(innerGroupDto == null) {
+            return null;
+        }
+        String groupName = innerGroupDto.getName().toLowerCase();
+        return groupRepository.findByName(groupName)
+                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_GROUP_MESSAGE, groupName)));
     }
 
     private boolean notExists(Long id) {

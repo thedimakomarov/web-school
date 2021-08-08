@@ -6,15 +6,16 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "Subject")
 @Table(name = "subjects")
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"}, callSuper = true)
-@ToString
 @Getter
 @Setter
+@ToString(exclude = {"lessons"})
 public class Subject extends AuditEntity<String> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +24,12 @@ public class Subject extends AuditEntity<String> implements Serializable {
 
     @Column(name = "name", unique = true)
     private String name;
+
+    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE,
+            CascadeType.PERSIST, CascadeType.REFRESH},
+            mappedBy = "subject",
+            targetEntity = Lesson.class)
+    private List<Lesson> lessons = new ArrayList<>();
 
     public Subject(String name) {
         this.name = name;

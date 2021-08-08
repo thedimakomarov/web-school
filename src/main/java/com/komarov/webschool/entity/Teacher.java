@@ -2,17 +2,20 @@ package com.komarov.webschool.entity;
 
 import com.komarov.webschool.dto.TeacherDto;
 import com.komarov.webschool.utility.StringUtility;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "Teacher")
 @Table(name = "teachers")
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"}, callSuper = true)
-@ToString
 @Getter
 @Setter
 public class Teacher extends Person implements Serializable {
@@ -21,6 +24,12 @@ public class Teacher extends Person implements Serializable {
     @Column(name = "id", updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE,
+            CascadeType.PERSIST, CascadeType.REFRESH},
+            mappedBy = "teacher",
+            targetEntity = Lesson.class)
+    List<Lesson> lessons = new ArrayList<>();
 
     public Teacher(String firstName, String middleName, String lastName, String phoneNumber) {
         super(firstName, middleName, lastName, phoneNumber);
@@ -49,5 +58,22 @@ public class Teacher extends Person implements Serializable {
         return teachersDto.stream()
                 .map(Teacher::parse)
                 .toList();
+    }
+
+    public String getFullName() {
+        String processedMiddleName = getMiddleName() != null ? getMiddleName() : "";
+        String fullName = getFirstName() + processedMiddleName + getLastName();
+        return fullName;
+    }
+
+    @Override
+    public String toString() {
+        return "Teacher{" +
+                "id=" + id +
+                ", firstName=" + getFirstName() +
+                ", middleName=" + getMiddleName() +
+                ", lastName=" + getLastName() +
+                ", phoneNumber=" + getPhoneNumber() +
+                '}';
     }
 }

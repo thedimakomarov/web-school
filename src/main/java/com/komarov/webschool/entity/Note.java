@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+//TODO: finish tish class
 //@MappedSuperclass
 @NoArgsConstructor
 @Getter

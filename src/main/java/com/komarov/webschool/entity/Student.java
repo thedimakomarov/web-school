@@ -48,14 +48,6 @@ public class Student extends Person implements Serializable {
         super(firstName, null, lastName, phoneNumber);
     }
 
-    @Override
-    public String toString() {
-        return "Student{" +
-                "id=" + id +
-                ", group=" + group.getName() +
-                '}';
-    }
-
     public static Student parse(StudentDto studentDto) {
         return new Student(
                 studentDto.getId(),
@@ -70,5 +62,13 @@ public class Student extends Person implements Serializable {
         return studentsDto.stream()
                 .map(Student::parse)
                 .toList();
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", group=" + group.getName() +
+                '}';
     }
 }

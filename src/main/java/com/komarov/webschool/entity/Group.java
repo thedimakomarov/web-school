@@ -32,6 +32,14 @@ public class Group extends AuditEntity<String> implements Serializable {
             targetEntity = Student.class)
     private List<Student> students = new ArrayList<>();
 
+    @OneToMany(
+            cascade = {CascadeType.DETACH, CascadeType.MERGE,
+                    CascadeType.PERSIST, CascadeType.REFRESH},
+            mappedBy = "group",
+            targetEntity = Lesson.class
+    )
+    private List<Lesson> lessons = new ArrayList<>();
+
     public Group(String name) {
         this.name = name;
     }

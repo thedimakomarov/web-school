@@ -9,14 +9,16 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.io.Serializable;
 
+//TODO: finish tish class
 //@Entity(name = "Mark")
 //@Table(name = "marks")
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"}, callSuper = true)
 @Getter
 @Setter
-public class Mark extends Note{
+public class Mark extends Note implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
