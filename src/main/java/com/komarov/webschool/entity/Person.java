@@ -17,12 +17,9 @@ public abstract class Person extends AuditEntity<String>{
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name = "middle_name")
-    private String middleName;
-
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
     @Column(name = "phone_number")
-    private String phoneNumber;
+    private String mobile;
 }

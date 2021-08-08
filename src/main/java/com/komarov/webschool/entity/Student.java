@@ -1,14 +1,13 @@
 package com.komarov.webschool.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.komarov.webschool.dto.StudentDto;
-import com.komarov.webschool.utility.StringUtility;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -22,39 +21,35 @@ import static javax.persistence.FetchType.LAZY;
 @Setter
 public class Student extends Person implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,
+    @ManyToOne(cascade = {CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH},
             fetch = LAZY,
-            targetEntity = Group.class)
-    @JoinColumn(name = "group_id")
-    @JsonIgnore
-    private Group group;
+            targetEntity = Team.class)
+    private Team team;
 
-    public Student(Long id, String firstName, String middleName, String lastName, String phoneNumber) {
-        super(firstName, middleName, lastName, phoneNumber);
+    private Student(Long id, String firstName, String lastName, String mobile) {
+        super(firstName, lastName, mobile);
         this.id = id;
     }
 
-    public Student(String firstName, String middleName, String lastName, String phoneNumber) {
-        super(firstName, middleName, lastName, phoneNumber);
-    }
-
-    public Student(String firstName, String lastName, String phoneNumber) {
-        super(firstName, null, lastName, phoneNumber);
+    public Student(String firstName, String lastName, String mobile) {
+        super(firstName, lastName, mobile);
     }
 
     public static Student parse(StudentDto studentDto) {
         return new Student(
                 studentDto.getId(),
-                StringUtility.makeNotNullStringLowerCase(studentDto.getFirstName()),
-                StringUtility.makeNotNullStringLowerCase(studentDto.getMiddleName()),
-                StringUtility.makeNotNullStringLowerCase(studentDto.getLastName()),
-                studentDto.getPhoneNumber()
+                studentDto.getFirstName(),
+                studentDto.getLastName(),
+                studentDto.getMobile()
         );
     }
 
@@ -68,7 +63,10 @@ public class Student extends Person implements Serializable {
     public String toString() {
         return "Student{" +
                 "id=" + id +
-                ", group=" + group.getName() +
+                ", firstName=" + getFirstName() +
+                ", lastName=" + getLastName() +
+                ", mobile=" + getMobile() +
+                ", team=" + team.getName() +
                 '}';
     }
 }

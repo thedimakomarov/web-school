@@ -1,10 +1,11 @@
 package com.komarov.webschool.dto;
 
 import com.komarov.webschool.entity.Student;
-import com.komarov.webschool.utility.StringUtility;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
@@ -14,8 +15,8 @@ import java.util.List;
 @Setter
 @ToString
 @EqualsAndHashCode
-@AllArgsConstructor
 public class StudentDto {
+
     @Null(message = "should be null")
     private Long id;
 
@@ -23,27 +24,22 @@ public class StudentDto {
     @Pattern(regexp = "(?m)^[^0-9_]{2,}$", message = "should be not empty, have at least 2 characters, not contain numbers or '_'")
     private String firstName;
 
-    @Pattern(regexp = "(?m)^[^0-9_]{2,}$", message = "should be not empty, have at least 2 characters, not contain numbers or '_'")
-    private String middleName;
-
     @NotNull(message = "should be not null")
     @Pattern(regexp = "(?m)^[^0-9_]{2,}$", message = "should be not empty, have at least 2 characters, not contain numbers or '_'")
     private String lastName;
 
     @Pattern(regexp = "\\d{9}", message = "should have 9 characters")
-    private String phoneNumber;
+    private String mobile;
 
-    @Valid
-    private InnerGroupDto group;
+    private String team;
 
     public static StudentDto parse(Student student) {
         return new StudentDto(
                 student.getId(),
-                StringUtility.makeFirstNotNullCharUpperCase(student.getFirstName()),
-                StringUtility.makeFirstNotNullCharUpperCase(student.getMiddleName()),
-                StringUtility.makeFirstNotNullCharUpperCase(student.getLastName()),
-                student.getPhoneNumber(),
-                InnerGroupDto.parse(student.getGroup())
+                student.getFirstName(),
+                student.getLastName(),
+                student.getMobile(),
+                student.getTeam()!=null ? student.getTeam().getName() : null
         );
     }
 
@@ -51,5 +47,13 @@ public class StudentDto {
         return students.stream()
                 .map(StudentDto::parse)
                 .toList();
+    }
+
+    public StudentDto(Long id, String firstName, String lastName, String mobile, String team) {
+        this.id = id;
+        this.firstName = firstName.toLowerCase();
+        this.lastName = lastName.toLowerCase();
+        this.mobile = mobile.toLowerCase();
+        this.team = team!=null ? team.toLowerCase() : null;
     }
 }

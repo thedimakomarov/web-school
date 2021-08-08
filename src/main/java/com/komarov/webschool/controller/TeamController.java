@@ -1,7 +1,7 @@
 package com.komarov.webschool.controller;
 
-import com.komarov.webschool.dto.GroupDto;
-import com.komarov.webschool.service.GroupService;
+import com.komarov.webschool.dto.TeamDto;
+import com.komarov.webschool.service.TeamService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,35 +10,35 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "groups")
-public record GroupController(GroupService service) {
+@RequestMapping(path = "teams")
+public record TeamController(TeamService service) {
 
     @GetMapping
-    public ResponseEntity<List<GroupDto>> findAll() {
+    public ResponseEntity<List<TeamDto>> findAll() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.findAll());
     }
 
     @GetMapping(path = "{id}")
-    public ResponseEntity<GroupDto> findById(@PathVariable Long id) {
+    public ResponseEntity<TeamDto> findById(@PathVariable Long id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<GroupDto> create(@Valid @RequestBody GroupDto groupDtoWithoutIdAndStudents) {
+    public ResponseEntity<TeamDto> create(@Valid @RequestBody TeamDto teamDtoWithoutIdAndStudents) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(service.create(groupDtoWithoutIdAndStudents));
+                .body(service.create(teamDtoWithoutIdAndStudents));
     }
 
     @PutMapping(path = "{id}")
-    public ResponseEntity<GroupDto> update(@PathVariable Long id, @Valid @RequestBody GroupDto groupDtoWithoutIdAndStudents) {
+    public ResponseEntity<TeamDto> update(@PathVariable Long id, @Valid @RequestBody TeamDto teamDtoWithoutIdAndStudents) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.update(id, groupDtoWithoutIdAndStudents));
+                .body(service.update(id, teamDtoWithoutIdAndStudents));
     }
 
     @DeleteMapping(path = "{id}")

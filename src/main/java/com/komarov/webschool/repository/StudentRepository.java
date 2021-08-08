@@ -14,6 +14,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE students SET group_id = null WHERE group_id = :groupId", nativeQuery = true)
-    void eliminateAllFromGroup(@Param("groupId") Long groupId);
+    @Query(value = "UPDATE students SET team_id = null WHERE team_id = :team_id", nativeQuery = true)
+    void eliminateAllFromTeam(@Param("team_id") Long teamId);
 }

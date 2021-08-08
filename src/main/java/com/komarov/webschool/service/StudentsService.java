@@ -10,5 +10,4 @@ public interface StudentsService {
     StudentDto create(StudentDto studentDtoWithoutId);
     StudentDto update(Long id, StudentDto studentDtoWithoutId);
     void deleteById(Long id);
-    void eliminateAllFromGroup(Long id);
 }
