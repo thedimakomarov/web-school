@@ -47,6 +47,7 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
         log.debug("SubjectService.update(id-{},{})", id, subjectDtoWithoutId);
 
         checkForExists(id);
+        checkForDuplicate(subjectDtoWithoutId.getName());
 
         subjectDtoWithoutId.setId(id);
         Subject subjectWithoutId = Subject.parse(subjectDtoWithoutId);

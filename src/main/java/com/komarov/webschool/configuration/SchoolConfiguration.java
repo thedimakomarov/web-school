@@ -1,8 +1,10 @@
 package com.komarov.webschool.configuration;
 
 import com.komarov.webschool.entity.Student;
+import com.komarov.webschool.entity.Subject;
 import com.komarov.webschool.entity.Team;
 import com.komarov.webschool.repository.StudentRepository;
+import com.komarov.webschool.repository.SubjectRepository;
 import com.komarov.webschool.repository.TeamRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +21,7 @@ public class SchoolConfiguration {
 
     @Bean
     public CommandLineRunner commandLineRunner(/*TeacherRepository teacherRepository,*/
-                                               /*SubjectRepository subjectRepository,*/
+                                               SubjectRepository subjectRepository,
                                                TeamRepository teamRepository,
                                                StudentRepository studentRepository/*,
                                                LessonRepository lessonRepository*/) {
@@ -29,10 +31,10 @@ public class SchoolConfiguration {
 //            Teacher zhess = new Teacher("zhess", "black", "000000000");
 //            teacherRepository.saveAll(List.of(arnold, debbie, zhess));
 
-//            Subject algebra = new Subject("algebra");
-//            Subject geography = new Subject("geography");
-//            Subject english = new Subject("english");
-//            subjectRepository.saveAll(List.of(algebra, geography, english));
+            Subject algebra = new Subject("algebra");
+            Subject geography = new Subject("geography");
+            Subject english = new Subject("english");
+            subjectRepository.saveAll(List.of(algebra, geography, english));
 
             Team alfa = new Team("alfa");
 

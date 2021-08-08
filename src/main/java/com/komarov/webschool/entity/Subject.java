@@ -1,12 +1,10 @@
 package com.komarov.webschool.entity;
 
 import com.komarov.webschool.dto.SubjectDto;
-import com.komarov.webschool.utility.StringUtility;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "Subject")
@@ -15,7 +13,7 @@ import java.util.List;
 @EqualsAndHashCode(of = {"id"}, callSuper = true)
 @Getter
 @Setter
-@ToString(exclude = {"lessons"})
+@ToString
 public class Subject extends AuditEntity<String> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,12 +22,6 @@ public class Subject extends AuditEntity<String> implements Serializable {
 
     @Column(name = "name", unique = true)
     private String name;
-
-    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH},
-            mappedBy = "subject",
-            targetEntity = Lesson.class)
-    private List<Lesson> lessons = new ArrayList<>();
 
     public Subject(String name) {
         this.name = name;
@@ -43,7 +35,7 @@ public class Subject extends AuditEntity<String> implements Serializable {
     public static Subject parse(SubjectDto subjectDto) {
         return new Subject(
                 subjectDto.getId(),
-                StringUtility.makeNotNullStringLowerCase(subjectDto.getName())
+                subjectDto.getName()
         );
     }
 

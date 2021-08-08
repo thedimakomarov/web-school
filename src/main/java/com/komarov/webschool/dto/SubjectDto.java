@@ -1,8 +1,10 @@
 package com.komarov.webschool.dto;
 
 import com.komarov.webschool.entity.Subject;
-import com.komarov.webschool.utility.StringUtility;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
@@ -13,7 +15,6 @@ import java.util.List;
 @Getter
 @ToString
 @EqualsAndHashCode
-@AllArgsConstructor
 public class SubjectDto {
 
     @Null(message = "should be null")
@@ -26,7 +27,7 @@ public class SubjectDto {
     public static SubjectDto parse(Subject subject) {
         return new SubjectDto(
                 subject.getId(),
-                StringUtility.makeFirstNotNullCharUpperCase(subject.getName())
+                subject.getName()
         );
     }
 
@@ -36,4 +37,8 @@ public class SubjectDto {
                 .toList();
     }
 
+    public SubjectDto(Long id, String name) {
+        this.id = id;
+        this.name = name.toLowerCase();
+    }
 }
