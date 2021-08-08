@@ -1,7 +1,6 @@
 package com.komarov.webschool.entity;
 
 import com.komarov.webschool.dto.TeacherDto;
-import com.komarov.webschool.utility.StringUtility;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +8,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "Teacher")
@@ -25,32 +23,21 @@ public class Teacher extends Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH},
-            mappedBy = "teacher",
-            targetEntity = Lesson.class)
-    List<Lesson> lessons = new ArrayList<>();
-
-    public Teacher(String firstName, String middleName, String lastName, String phoneNumber) {
-        super(firstName, middleName, lastName, phoneNumber);
-    }
-
-    public Teacher(String firstName, String lastName, String phoneNumber) {
-        super(firstName, null, lastName, phoneNumber);
-    }
-
-    private Teacher(Long id, String firstName, String middleName, String lastName, String phoneNumber) {
-        super(firstName, middleName, lastName, phoneNumber);
+    private Teacher(Long id, String firstName, String lastName, String mobile) {
+        super(firstName, lastName, mobile);
         this.id = id;
+    }
+
+    public Teacher(String firstName, String lastName, String mobile) {
+        super(firstName, lastName, mobile);
     }
 
     public static Teacher parse(TeacherDto teacherDto) {
         return new Teacher(
                 teacherDto.getId(),
-                StringUtility.makeNotNullStringLowerCase(teacherDto.getFirstName()),
-                StringUtility.makeNotNullStringLowerCase(teacherDto.getMiddleName()),
-                StringUtility.makeNotNullStringLowerCase(teacherDto.getLastName()),
-                teacherDto.getPhoneNumber()
+                teacherDto.getFirstName(),
+                teacherDto.getLastName(),
+                teacherDto.getMobile()
         );
     }
 
@@ -61,9 +48,7 @@ public class Teacher extends Person implements Serializable {
     }
 
     public String getFullName() {
-        String processedMiddleName = getMiddleName() != null ? getMiddleName() : "";
-        String fullName = getFirstName() + processedMiddleName + getLastName();
-        return fullName;
+        return getFirstName() + getLastName();
     }
 
     @Override
@@ -71,9 +56,8 @@ public class Teacher extends Person implements Serializable {
         return "Teacher{" +
                 "id=" + id +
                 ", firstName=" + getFirstName() +
-                ", middleName=" + getMiddleName() +
                 ", lastName=" + getLastName() +
-                ", phoneNumber=" + getPhoneNumber() +
+                ", mobile=" + getMobile() +
                 '}';
     }
 }

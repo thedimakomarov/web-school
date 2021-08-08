@@ -2,9 +2,11 @@ package com.komarov.webschool.configuration;
 
 import com.komarov.webschool.entity.Student;
 import com.komarov.webschool.entity.Subject;
+import com.komarov.webschool.entity.Teacher;
 import com.komarov.webschool.entity.Team;
 import com.komarov.webschool.repository.StudentRepository;
 import com.komarov.webschool.repository.SubjectRepository;
+import com.komarov.webschool.repository.TeacherRepository;
 import com.komarov.webschool.repository.TeamRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -20,16 +22,16 @@ import java.util.Optional;
 public class SchoolConfiguration {
 
     @Bean
-    public CommandLineRunner commandLineRunner(/*TeacherRepository teacherRepository,*/
+    public CommandLineRunner commandLineRunner(TeacherRepository teacherRepository,
                                                SubjectRepository subjectRepository,
                                                TeamRepository teamRepository,
                                                StudentRepository studentRepository/*,
                                                LessonRepository lessonRepository*/) {
         return args -> {
-//            Teacher arnold = new Teacher("arnold", "flannagan", "000000000");
-//            Teacher debbie = new Teacher("debbie",  "adams", "000000000");
-//            Teacher zhess = new Teacher("zhess", "black", "000000000");
-//            teacherRepository.saveAll(List.of(arnold, debbie, zhess));
+            Teacher arnold = new Teacher("arnold", "flannagan", "000000000");
+            Teacher debbie = new Teacher("debbie",  "adams", "000000000");
+            Teacher zhess = new Teacher("zhess", "black", "000000000");
+            teacherRepository.saveAll(List.of(arnold, debbie, zhess));
 
             Subject algebra = new Subject("algebra");
             Subject geography = new Subject("geography");

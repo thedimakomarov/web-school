@@ -1,8 +1,10 @@
 package com.komarov.webschool.dto;
 
 import com.komarov.webschool.entity.Teacher;
-import com.komarov.webschool.utility.StringUtility;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
@@ -13,7 +15,6 @@ import java.util.List;
 @Getter
 @ToString
 @EqualsAndHashCode
-@AllArgsConstructor
 public class TeacherDto {
 
     @Null(message = "should be null")
@@ -23,23 +24,19 @@ public class TeacherDto {
     @Pattern(regexp = "(?m)^[^0-9_]{2,}$", message = "should be not empty, have at least 2 characters, not contain numbers or '_'")
     private String firstName;
 
-    @Pattern(regexp = "(?m)^[^0-9_]{2,}$", message = "should be not empty, have at least 2 characters, not contain numbers or '_'")
-    private String middleName;
-
     @NotNull(message = "should be not null")
     @Pattern(regexp = "(?m)^[^0-9_]{2,}$", message = "should be not empty, have at least 2 characters, not contain numbers or '_'")
     private String lastName;
 
     @Pattern(regexp = "\\d{9}", message = "should have 9 characters")
-    private String phoneNumber;
+    private String mobile;
 
     public static TeacherDto parse(Teacher teacher) {
         return new TeacherDto(
                 teacher.getId(),
-                StringUtility.makeFirstNotNullCharUpperCase(teacher.getFirstName()),
-                StringUtility.makeFirstNotNullCharUpperCase(teacher.getMiddleName()),
-                StringUtility.makeFirstNotNullCharUpperCase(teacher.getLastName()),
-                teacher.getPhoneNumber()
+                teacher.getFirstName(),
+                teacher.getLastName(),
+                teacher.getMobile()
         );
     }
 
@@ -47,5 +44,12 @@ public class TeacherDto {
         return teachers.stream()
                 .map(TeacherDto::parse)
                 .toList();
+    }
+
+    public TeacherDto(Long id, String firstName, String lastName, String mobile) {
+        this.id = id;
+        this.firstName = firstName.toLowerCase();
+        this.lastName = lastName.toLowerCase();
+        this.mobile = mobile;
     }
 }

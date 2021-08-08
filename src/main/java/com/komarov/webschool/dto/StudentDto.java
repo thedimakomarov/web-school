@@ -53,7 +53,7 @@ public class StudentDto {
         this.id = id;
         this.firstName = firstName.toLowerCase();
         this.lastName = lastName.toLowerCase();
-        this.mobile = mobile.toLowerCase();
+        this.mobile = mobile;
         this.team = team!=null ? team.toLowerCase() : null;
     }
 }
