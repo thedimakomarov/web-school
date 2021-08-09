@@ -49,7 +49,7 @@ public class StudentDto {
                 .toList();
     }
 
-    public StudentDto(Long id, String firstName, String lastName, String mobile, String team) {
+    private StudentDto(Long id, String firstName, String lastName, String mobile, String team) {
         this.id = id;
         this.firstName = firstName.toLowerCase();
         this.lastName = lastName.toLowerCase();

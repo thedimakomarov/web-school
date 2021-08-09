@@ -31,31 +31,31 @@ public class Lesson implements Serializable {
     @Column(name = "date", nullable = false)
     private Instant date;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH,
+    @ManyToOne(cascade = {CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH},
             fetch = LAZY,
-            targetEntity = Group.class)
-    @JoinColumn(name = "group_id")
-    private Group group;
+            targetEntity = Team.class)
+    @JoinColumn(name = "team_id")
+    private Team team;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH,
+    @ManyToOne(cascade = {CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH},
             fetch = LAZY,
             targetEntity = Teacher.class)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH,
+    @ManyToOne(cascade = {CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH},
             fetch = LAZY,
             targetEntity = Subject.class)
     @JoinColumn(name = "subject_id")
     private Subject subject;
 
-    public Lesson(String topic, Instant date, Group group, Teacher teacher, Subject subject) {
+    public Lesson(String topic, Instant date, Team team, Teacher teacher, Subject subject) {
         this.topic = topic;
         this.date = date;
-        this.group = group;
+        this.team = team;
         this.teacher = teacher;
         this.subject = subject;
     }
@@ -65,12 +65,6 @@ public class Lesson implements Serializable {
         this.topic = topic;
         this.date = date;
     }
-
-    //    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
-//    private List<Mark> marks;
-
-//    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
-//    private List<Absentee> absentees;
 
     public static Lesson parse(LessonDto lessonDto) {
         return new Lesson(
@@ -84,7 +78,7 @@ public class Lesson implements Serializable {
         return "Lesson{" +
                 "topic='" + topic +
                 ", date=" + date +
-                ", group=" + group.getName() +
+                ", team=" + team.getName() +
                 ", teacher=" + teacher.getFullName() +
                 ", subject=" + subject.getName() +
                 '}';

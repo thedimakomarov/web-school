@@ -46,7 +46,7 @@ public class TeacherDto {
                 .toList();
     }
 
-    public TeacherDto(Long id, String firstName, String lastName, String mobile) {
+    private TeacherDto(Long id, String firstName, String lastName, String mobile) {
         this.id = id;
         this.firstName = firstName.toLowerCase();
         this.lastName = lastName.toLowerCase();

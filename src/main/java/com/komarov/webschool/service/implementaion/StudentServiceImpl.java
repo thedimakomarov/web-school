@@ -38,7 +38,7 @@ public record StudentServiceImpl(StudentRepository studentRepository,
     public StudentDto create(StudentDto studentDtoWithoutId) {
         log.debug("StudentService.create({})", studentDtoWithoutId);
 
-        Team team = checkIfPresentOrThrowException(studentDtoWithoutId.getTeam());
+        Team team = checkIfTeamPresentOrThrowException(studentDtoWithoutId.getTeam());
 
         Student student = Student.parse(studentDtoWithoutId);
         student.setTeam(team);
@@ -51,7 +51,7 @@ public record StudentServiceImpl(StudentRepository studentRepository,
 
         checkForExists(id);
 
-        Team team = checkIfPresentOrThrowException(studentDtoWithoutId.getTeam());
+        Team team = checkIfTeamPresentOrThrowException(studentDtoWithoutId.getTeam());
 
         Student student = Student.parse(studentDtoWithoutId);
         student.setId(id);
@@ -67,18 +67,18 @@ public record StudentServiceImpl(StudentRepository studentRepository,
         studentRepository.deleteById(id);
     }
 
-    private void checkForExists(Long id) {
-        if (notExists(id)) {
-            throw new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id));
-        }
-    }
-
-    public Team checkIfPresentOrThrowException(String teamName) {
+    public Team checkIfTeamPresentOrThrowException(String teamName) {
         if (teamName != null) {
             return teamRepository.findByName(teamName)
                     .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_TEAM_MESSAGE, teamName)));
         }
         return null;
+    }
+
+    private void checkForExists(Long id) {
+        if (notExists(id)) {
+            throw new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id));
+        }
     }
 
     private boolean notExists(Long id) {

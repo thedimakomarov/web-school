@@ -33,6 +33,7 @@ public class Student extends Person implements Serializable {
             CascadeType.PERSIST, CascadeType.REFRESH},
             fetch = LAZY,
             targetEntity = Team.class)
+    @JoinColumn(name = "team_id")
     private Team team;
 
     private Student(Long id, String firstName, String lastName, String mobile) {

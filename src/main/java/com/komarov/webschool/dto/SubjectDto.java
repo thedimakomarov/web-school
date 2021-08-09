@@ -37,7 +37,7 @@ public class SubjectDto {
                 .toList();
     }
 
-    public SubjectDto(Long id, String name) {
+    private SubjectDto(Long id, String name) {
         this.id = id;
         this.name = name.toLowerCase();
     }

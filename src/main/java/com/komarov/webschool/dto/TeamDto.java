@@ -35,7 +35,7 @@ public class TeamDto {
                 .toList();
     }
 
-    public TeamDto(Long id, String name) {
+    private TeamDto(Long id, String name) {
         this.id = id;
         this.name = name.toLowerCase();
     }
