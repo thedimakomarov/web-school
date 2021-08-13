@@ -4,17 +4,22 @@ import com.komarov.webschool.dto.SubjectDto;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity(name = "Subject")
 @Table(name = "subjects")
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id"}, callSuper = true)
+@EqualsAndHashCode(of = {"id"}, callSuper = true)//TODO: avoid this annotation
 @Getter
 @Setter
 @ToString
 public class Subject extends AuditEntity<String> implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)

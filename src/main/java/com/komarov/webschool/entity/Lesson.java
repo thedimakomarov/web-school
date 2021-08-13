@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 
@@ -15,10 +16,13 @@ import static javax.persistence.FetchType.LAZY;
 @Entity(name = "Lesson")
 @Table(name = "lessons")
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = {"id"})//TODO: avoid this annotation
 @Getter
 @Setter
 public class Lesson implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

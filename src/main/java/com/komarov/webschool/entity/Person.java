@@ -20,6 +20,6 @@ public abstract class Person extends AuditEntity<String>{
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "phone_number")
+    @Column(name = "mobile")
     private String mobile;
 }

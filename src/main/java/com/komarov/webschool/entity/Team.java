@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode(of = {"id"}, callSuper = true)
+@EqualsAndHashCode(of = {"id"}, callSuper = true)//TODO: avoid this annotation
 @NoArgsConstructor
 public class Team extends AuditEntity<String> implements Serializable {
 

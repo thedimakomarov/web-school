@@ -1,7 +1,6 @@
 package com.komarov.webschool.dto;
 
 import com.komarov.webschool.entity.Lesson;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,18 +8,17 @@ import lombok.ToString;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.time.Instant;
 import java.util.List;
 
-@Setter
 @Getter
+@Setter
 @ToString
-@EqualsAndHashCode
-public class LessonDto {
-
-    @Null(message = "should be null")
-    private Long id;
+public class InnerLessonDto {
+    //TODO add id
+    //TODO change logic in services
+    //TODO change validations
+    //TODO check all toLowerCase()
 
     @NotBlank(message = "should be not empty and not null")
     private String topic;
@@ -38,25 +36,23 @@ public class LessonDto {
     @NotNull(message = "should be not null")
     private String subject;
 
-    public static LessonDto parse(Lesson lesson) {
-        return new LessonDto(
-                lesson.getId(),
+    public static InnerLessonDto parse(Lesson lesson) {
+        return new InnerLessonDto(
                 lesson.getTopic(),
                 lesson.getDate(),
-                lesson.getTeam().getName(),
+                lesson.getTopic(),
                 InnerTeacherDto.parse(lesson.getTeacher()),
                 lesson.getSubject().getName()
         );
     }
 
-    public static List<LessonDto> parse(List<Lesson> lessons) {
+    public static List<InnerLessonDto> parse(List<Lesson> lessons) {
         return lessons.stream()
-                .map(LessonDto::parse)
+                .map(InnerLessonDto::parse)
                 .toList();
     }
 
-    private LessonDto(Long id, String topic, Instant date, String team, InnerTeacherDto teacher, String subject) {
-        this.id = id;
+    public InnerLessonDto(String topic, Instant date, String team, InnerTeacherDto teacher, String subject) {
         this.topic = topic.toLowerCase();
         this.date = date;
         this.team = team.toLowerCase();

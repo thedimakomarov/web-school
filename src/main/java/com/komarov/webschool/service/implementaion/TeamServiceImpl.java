@@ -34,24 +34,24 @@ public record TeamServiceImpl(TeamRepository teamRepository, StudentRepository s
     }
 
     @Override
-    public TeamDto create(TeamDto teamDtoWithoutIdAndStudents) {
-        log.debug("TeamService.create({})", teamDtoWithoutIdAndStudents);
+    public TeamDto create(TeamDto teamDto) {
+        log.debug("TeamService.create({})", teamDto);
 
-        checkForDuplicate(teamDtoWithoutIdAndStudents.getName());
+        checkForDuplicate(teamDto.getName());
 
-        Team team = Team.parse(teamDtoWithoutIdAndStudents);
+        Team team = Team.parse(teamDto);
         return TeamDto.parse(teamRepository.save(team));
     }
 
     @Override
-    public TeamDto update(Long id, TeamDto teamDtoWithoutIdAndStudents) {
-        log.debug("TeamService.update(id-{},{})", id, teamDtoWithoutIdAndStudents);
+    public TeamDto update(Long id, TeamDto teamDto) {
+        log.debug("TeamService.update(id-{},{})", id, teamDto);
 
         checkForExists(id);
-        checkForDuplicate(teamDtoWithoutIdAndStudents.getName());
+        checkForDuplicate(teamDto.getName());
 
-        teamDtoWithoutIdAndStudents.setId(id);
-        Team team = Team.parse(teamDtoWithoutIdAndStudents);
+        teamDto.setId(id);
+        Team team = Team.parse(teamDto);
         return TeamDto.parse(teamRepository.save(team));
     }
 

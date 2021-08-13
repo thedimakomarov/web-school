@@ -16,7 +16,7 @@ import static javax.persistence.FetchType.LAZY;
 @Entity(name = "Student")
 @Table(name = "students")
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id"}, callSuper = true)
+@EqualsAndHashCode(of = {"id"}, callSuper = true)//TODO: avoid this annotation
 @Getter
 @Setter
 public class Student extends Person implements Serializable {
