@@ -4,8 +4,8 @@ import com.komarov.webschool.dto.TeamDto;
 import com.komarov.webschool.entity.Team;
 import com.komarov.webschool.exception.DuplicateException;
 import com.komarov.webschool.exception.NotFoundException;
-import com.komarov.webschool.repository.StudentRepository;
 import com.komarov.webschool.repository.TeamRepository;
+import com.komarov.webschool.service.StudentService;
 import com.komarov.webschool.service.TeamService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import java.util.List;
 
 @Log4j2
 @Service
-public record TeamServiceImpl(TeamRepository teamRepository, StudentRepository studentRepository) implements TeamService {
+public record TeamServiceImpl(TeamRepository teamRepository, StudentService studentService) implements TeamService {
     private static final String NOT_FOUND_ID_MESSAGE = "Team with id - %d was not found. Choose another or create new team with current parameters.";
     private static final String NOT_FOUND_NAME_MESSAGE = "Team with name - '%s' was not found. Choose another or create new team with current parameters.";
     private static final String DUPLICATE_MESSAGE = "Team with name - %s already exists. Choose another name for team.";
@@ -68,7 +68,7 @@ public record TeamServiceImpl(TeamRepository teamRepository, StudentRepository s
 
         checkForExists(id);
 
-        studentRepository.eliminateAllFromTeam(id);
+        studentService.eliminateAllFromTeam(id);
         teamRepository.deleteById(id);
     }
 

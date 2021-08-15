@@ -67,12 +67,19 @@ public record StudentServiceImpl(StudentRepository studentRepository,
         return StudentDto.parse(studentRepository.save(student));
     }
 
+
+
     @Override
     public void deleteById(Long id) {
         log.debug("StudentService.deleteById(id-{})", id);
 
         checkForExists(id);
         studentRepository.deleteById(id);
+    }
+
+    @Override
+    public void eliminateAllFromTeam(Long teamId) {
+        studentRepository.eliminateAllFromTeam(teamId);
     }
 
     public Team checkIfTeamPresentOrThrowException(String teamName) {
