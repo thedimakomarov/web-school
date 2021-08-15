@@ -40,23 +40,23 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
     }
 
     @Override
-    public SubjectDto create(SubjectDto subjectDtoWithoutId) {
-        log.debug("SubjectService.create({})", subjectDtoWithoutId);
+    public SubjectDto create(SubjectDto subjectDto) {
+        log.debug("SubjectService.create({})", subjectDto);
 
-        checkForDuplicate(subjectDtoWithoutId.getName());
+        checkForDuplicate(subjectDto.getName());
 
-        Subject subjectWithoutId = prepareForSaving(subjectDtoWithoutId);
+        Subject subjectWithoutId = prepareForSaving(subjectDto);
         return SubjectDto.parse(subjectRepository.save(subjectWithoutId));
     }
 
     @Override
-    public SubjectDto update(Long id, SubjectDto subjectDtoWithoutId) {
-        log.debug("SubjectService.update(id-{},{})", id, subjectDtoWithoutId);
+    public SubjectDto update(Long id, SubjectDto subjectDto) {
+        log.debug("SubjectService.update(id-{},{})", id, subjectDto);
 
         checkForExists(id);
-        checkForDuplicate(subjectDtoWithoutId.getName());
+        checkForDuplicate(subjectDto.getName());
 
-        Subject subjectWithoutId = prepareForSaving(subjectDtoWithoutId);
+        Subject subjectWithoutId = prepareForSaving(subjectDto);
         subjectWithoutId.setId(id);
         return SubjectDto.parse(subjectRepository.save(subjectWithoutId));
     }

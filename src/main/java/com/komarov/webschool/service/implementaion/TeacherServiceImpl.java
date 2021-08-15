@@ -39,20 +39,20 @@ public record TeacherServiceImpl(TeacherRepository teacherRepository) implements
     }
 
     @Override
-    public TeacherDto create(TeacherDto teacherDtoWithoutId) {
-        log.debug("TeacherService.create({})", teacherDtoWithoutId);
+    public TeacherDto create(TeacherDto teacherDto) {
+        log.debug("TeacherService.create({})", teacherDto);
 
-        Teacher teacherWithoutId = prepareForSaving(teacherDtoWithoutId);
+        Teacher teacherWithoutId = prepareForSaving(teacherDto);
         return TeacherDto.parse(teacherRepository.save(teacherWithoutId));
     }
 
     @Override
-    public TeacherDto update(Long id, TeacherDto teacherDtoWithoutId) {
-        log.debug("TeacherService.update(id-{},{})", id, teacherDtoWithoutId);
+    public TeacherDto update(Long id, TeacherDto teacherDto) {
+        log.debug("TeacherService.update(id-{},{})", id, teacherDto);
 
         checkForExists(id);
 
-        Teacher teacherWithoutId = prepareForSaving(teacherDtoWithoutId);
+        Teacher teacherWithoutId = prepareForSaving(teacherDto);
         teacherWithoutId.setId(id);
         return TeacherDto.parse(teacherRepository.save(teacherWithoutId));
     }

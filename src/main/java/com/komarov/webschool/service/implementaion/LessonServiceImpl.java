@@ -52,20 +52,20 @@ public record LessonServiceImpl(LessonRepository lessonRepository,
     }
 
     @Override
-    public LessonDto create(LessonDto lessonDtoWithoutId) {
-        log.debug("LessonService.create({})", lessonDtoWithoutId);
+    public LessonDto create(LessonDto lessonDto) {
+        log.debug("LessonService.create({})", lessonDto);
 
-        Lesson lesson = prepareForSaving(lessonDtoWithoutId);
+        Lesson lesson = prepareForSaving(lessonDto);
         return LessonDto.parse(lessonRepository.save(lesson));
     }
 
     @Override
-    public LessonDto update(Long id, LessonDto lessonDtoWithoutId) {
-        log.debug("LessonService.update(id-{}, {})", id, lessonDtoWithoutId);
+    public LessonDto update(Long id, LessonDto lessonDto) {
+        log.debug("LessonService.update(id-{}, {})", id, lessonDto);
 
         checkForExists(id);
 
-        Lesson lesson = prepareForSaving(lessonDtoWithoutId);
+        Lesson lesson = prepareForSaving(lessonDto);
         lesson.setId(id);
         return LessonDto.parse(lessonRepository.save(lesson));
     }

@@ -42,20 +42,20 @@ public record StudentServiceImpl(StudentRepository studentRepository,
     }
 
     @Override
-    public StudentDto create(StudentDto studentDtoWithoutId) {
-        log.debug("StudentService.create({})", studentDtoWithoutId);
+    public StudentDto create(StudentDto studentDto) {
+        log.debug("StudentService.create({})", studentDto);
 
-        Student student = prepareForSaving(studentDtoWithoutId);
+        Student student = prepareForSaving(studentDto);
         return StudentDto.parse(studentRepository.save(student));
     }
 
     @Override
-    public StudentDto update(Long id, StudentDto studentDtoWithoutId) {
-        log.debug("StudentService.update(id-{},{})", id, studentDtoWithoutId);
+    public StudentDto update(Long id, StudentDto studentDto) {
+        log.debug("StudentService.update(id-{},{})", id, studentDto);
 
         checkForExists(id);
 
-        Student student = prepareForSaving(studentDtoWithoutId);
+        Student student = prepareForSaving(studentDto);
         student.setId(id);
         return StudentDto.parse(studentRepository.save(student));
     }
