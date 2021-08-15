@@ -45,10 +45,7 @@ public record StudentServiceImpl(StudentRepository studentRepository,
     public StudentDto create(StudentDto studentDtoWithoutId) {
         log.debug("StudentService.create({})", studentDtoWithoutId);
 
-        Team team = teamService.findByName(studentDtoWithoutId.getTeam());
-
-        Student student = Student.parse(studentDtoWithoutId);
-        student.setTeam(team);
+        Student student = prepareForSaving(studentDtoWithoutId);
         return StudentDto.parse(studentRepository.save(student));
     }
 
@@ -58,12 +55,17 @@ public record StudentServiceImpl(StudentRepository studentRepository,
 
         checkForExists(id);
 
+        Student student = prepareForSaving(studentDtoWithoutId);
+        student.setId(id);
+        return StudentDto.parse(studentRepository.save(student));
+    }
+
+    private Student prepareForSaving(StudentDto studentDtoWithoutId) {
         Team team = teamService.findByName(studentDtoWithoutId.getTeam());
 
         Student student = Student.parse(studentDtoWithoutId);
-        student.setId(id);
         student.setTeam(team);
-        return StudentDto.parse(studentRepository.save(student));
+        return student;
     }
 
     @Override

@@ -55,7 +55,7 @@ public record LessonServiceImpl(LessonRepository lessonRepository,
     public LessonDto create(LessonDto lessonDtoWithoutId) {
         log.debug("LessonService.create({})", lessonDtoWithoutId);
 
-        Lesson lesson = prepareLessonForSave(lessonDtoWithoutId);
+        Lesson lesson = prepareForSaving(lessonDtoWithoutId);
         return LessonDto.parse(lessonRepository.save(lesson));
     }
 
@@ -65,12 +65,12 @@ public record LessonServiceImpl(LessonRepository lessonRepository,
 
         checkForExists(id);
 
-        Lesson lesson = prepareLessonForSave(lessonDtoWithoutId);
+        Lesson lesson = prepareForSaving(lessonDtoWithoutId);
         lesson.setId(id);
         return LessonDto.parse(lessonRepository.save(lesson));
     }
 
-    private Lesson prepareLessonForSave(LessonDto lessonDtoWithoutId) {
+    private Lesson prepareForSaving(LessonDto lessonDtoWithoutId) {
         Team team = teamService.findByName(lessonDtoWithoutId.getTeam());
         Teacher teacher = teacherService.findByFullName(lessonDtoWithoutId.getTeacher().getFirstName(), lessonDtoWithoutId.getTeacher().getLastName());
         Subject subject = subjectService.findByName(lessonDtoWithoutId.getSubject());

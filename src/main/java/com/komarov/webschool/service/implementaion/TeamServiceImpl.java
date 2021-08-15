@@ -46,7 +46,7 @@ public record TeamServiceImpl(TeamRepository teamRepository, StudentRepository s
 
         checkForDuplicate(teamDto.getName());
 
-        Team team = Team.parse(teamDto);
+        Team team = prepareForSaving(teamDto);
         return TeamDto.parse(teamRepository.save(team));
     }
 
@@ -57,9 +57,14 @@ public record TeamServiceImpl(TeamRepository teamRepository, StudentRepository s
         checkForExists(id);
         checkForDuplicate(teamDto.getName());
 
-        teamDto.setId(id);
-        Team team = Team.parse(teamDto);
+        Team team = prepareForSaving(teamDto);
+        team.setId(id);
         return TeamDto.parse(teamRepository.save(team));
+    }
+
+    private Team prepareForSaving(TeamDto teamDto) {
+        Team team = Team.parse(teamDto);
+        return team;
     }
 
     @Override

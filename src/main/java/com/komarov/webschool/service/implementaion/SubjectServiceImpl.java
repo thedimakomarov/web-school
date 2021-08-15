@@ -45,7 +45,7 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
 
         checkForDuplicate(subjectDtoWithoutId.getName());
 
-        Subject subjectWithoutId = Subject.parse(subjectDtoWithoutId);
+        Subject subjectWithoutId = prepareForSaving(subjectDtoWithoutId);
         return SubjectDto.parse(subjectRepository.save(subjectWithoutId));
     }
 
@@ -56,9 +56,14 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
         checkForExists(id);
         checkForDuplicate(subjectDtoWithoutId.getName());
 
-        subjectDtoWithoutId.setId(id);
-        Subject subjectWithoutId = Subject.parse(subjectDtoWithoutId);
+        Subject subjectWithoutId = prepareForSaving(subjectDtoWithoutId);
+        subjectWithoutId.setId(id);
         return SubjectDto.parse(subjectRepository.save(subjectWithoutId));
+    }
+
+    private Subject prepareForSaving(SubjectDto subjectDtoWithoutId) {
+        Subject subjectWithoutId = Subject.parse(subjectDtoWithoutId);
+        return subjectWithoutId;
     }
 
     @Override

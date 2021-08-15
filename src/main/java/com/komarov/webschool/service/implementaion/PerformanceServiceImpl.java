@@ -45,7 +45,7 @@ public record PerformanceServiceImpl(StudentService studentService,
 
         checkСonsistencyMarkAndPresenting(progressDto);
 
-        Performance performance = preparePerformanceForSave(progressDto);
+        Performance performance = prepareForSaving(progressDto);
         return PerformanceDto.parse(performanceRepository.save(performance));
     }
 
@@ -56,12 +56,12 @@ public record PerformanceServiceImpl(StudentService studentService,
         checkForExists(id);
         checkСonsistencyMarkAndPresenting(progressDto);
 
-        Performance performance = preparePerformanceForSave(progressDto);
+        Performance performance = prepareForSaving(progressDto);
         performance.setId(id);
         return PerformanceDto.parse(performanceRepository.save(performance));
     }
 
-    private Performance preparePerformanceForSave(PerformanceDto progressDto) {
+    private Performance prepareForSaving(PerformanceDto progressDto) {
         Lesson lessonForPerformance = lessonService.findByInnerLesson(progressDto.getLesson());
 
         InnerStudentDto studentDto = progressDto.getStudent();

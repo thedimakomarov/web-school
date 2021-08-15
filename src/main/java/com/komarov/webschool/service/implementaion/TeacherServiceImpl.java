@@ -42,7 +42,7 @@ public record TeacherServiceImpl(TeacherRepository teacherRepository) implements
     public TeacherDto create(TeacherDto teacherDtoWithoutId) {
         log.debug("TeacherService.create({})", teacherDtoWithoutId);
 
-        Teacher teacherWithoutId = Teacher.parse(teacherDtoWithoutId);
+        Teacher teacherWithoutId = prepareForSaving(teacherDtoWithoutId);
         return TeacherDto.parse(teacherRepository.save(teacherWithoutId));
     }
 
@@ -52,9 +52,14 @@ public record TeacherServiceImpl(TeacherRepository teacherRepository) implements
 
         checkForExists(id);
 
-        teacherDtoWithoutId.setId(id);
-        Teacher teacherWithoutId = Teacher.parse(teacherDtoWithoutId);
+        Teacher teacherWithoutId = prepareForSaving(teacherDtoWithoutId);
+        teacherWithoutId.setId(id);
         return TeacherDto.parse(teacherRepository.save(teacherWithoutId));
+    }
+
+    private Teacher prepareForSaving(TeacherDto teacherDtoWithoutId) {
+        Teacher teacherWithoutId = Teacher.parse(teacherDtoWithoutId);
+        return teacherWithoutId;
     }
 
     @Override
