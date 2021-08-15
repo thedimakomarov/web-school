@@ -1,7 +1,7 @@
 package com.komarov.webschool.controller;
 
 import com.komarov.webschool.dto.StudentDto;
-import com.komarov.webschool.service.StudentsService;
+import com.komarov.webschool.service.StudentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "students")
-public record StudentController(StudentsService service) {
+public record StudentController(StudentService service) {
 
     @GetMapping
     public ResponseEntity<List<StudentDto>> findAll() {

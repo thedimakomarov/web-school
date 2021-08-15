@@ -14,7 +14,8 @@ import java.util.List;
 @Log4j2
 @Service
 public record SubjectServiceImpl(SubjectRepository subjectRepository) implements SubjectService {
-    private static final String NOT_FOUND_MESSAGE = "Subject with id - %d was not found. Choose another id from the list of existing subjects.";
+    private static final String NOT_FOUND_ID_MESSAGE = "Subject with id - %d was not found. Choose another id from the list of existing subjects.";
+    private static final String NOT_FOUND_NAME_MESSAGE = "Subject with name - '%s' was not found. Choose another subject from the list of existing subjects, or create new subject with current name.";
     private static final String DUPLICATE_MESSAGE = "Subject with name - %s already exists. Choose another name for subject.";
 
     @Override
@@ -29,7 +30,13 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
         log.debug("SubjectService.findById(id-{})", id);
 
         return SubjectDto.parse(subjectRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_MESSAGE, id))));
+                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
+    }
+
+    @Override
+    public Subject findByName(String subjectName) {
+        return subjectRepository.findByName(subjectName)
+                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_NAME_MESSAGE, subjectName)));
     }
 
     @Override
@@ -65,7 +72,7 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
 
     private void checkForExists(Long id) {
         if(notExists(id)) {
-            throw new NotFoundException(String.format(NOT_FOUND_MESSAGE, id));
+            throw new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id));
         }
     }
 

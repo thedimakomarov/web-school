@@ -1,7 +1,6 @@
 package com.komarov.webschool.entity;
 
 import com.komarov.webschool.dto.TeacherDto;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,11 +9,11 @@ import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 @Entity(name = "Teacher")
 @Table(name = "teachers")
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id"}, callSuper = true)//TODO: avoid this annotation
 @Getter
 @Setter
 public class Teacher extends Person implements Serializable {
@@ -63,5 +62,18 @@ public class Teacher extends Person implements Serializable {
                 ", lastName=" + getLastName() +
                 ", mobile=" + getMobile() +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Teacher teacher = (Teacher) o;
+        return Objects.equals(id, teacher.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

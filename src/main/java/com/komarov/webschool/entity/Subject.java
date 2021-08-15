@@ -1,17 +1,20 @@
 package com.komarov.webschool.entity;
 
 import com.komarov.webschool.dto.SubjectDto;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 @Entity(name = "Subject")
 @Table(name = "subjects")
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id"}, callSuper = true)//TODO: avoid this annotation
 @Getter
 @Setter
 @ToString
@@ -48,5 +51,18 @@ public class Subject extends AuditEntity<String> implements Serializable {
         return subjectsDto.stream()
                 .map(Subject::parse)
                 .toList();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Subject subject = (Subject) o;
+        return Objects.equals(id, subject.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

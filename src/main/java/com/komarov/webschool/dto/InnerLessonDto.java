@@ -5,9 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.time.Instant;
 import java.util.List;
 
@@ -23,24 +22,23 @@ public class InnerLessonDto {
     @NotBlank(message = "should be not empty and not null")
     private String topic;
 
-    @NotNull(message = "should be not null")
+    @Null(message = "should be null")
     private Instant date;
 
     @NotBlank(message = "should be not empty and not null")
     private String team;
 
-    @Valid
-    @NotNull(message = "should be not null")
+    @Null(message = "should be null")
     private InnerTeacherDto teacher;
 
-    @NotNull(message = "should be not null")
+    @NotBlank(message = "should be not empty and not null")
     private String subject;
 
     public static InnerLessonDto parse(Lesson lesson) {
         return new InnerLessonDto(
                 lesson.getTopic(),
                 lesson.getDate(),
-                lesson.getTopic(),
+                lesson.getTeam().getName(),
                 InnerTeacherDto.parse(lesson.getTeacher()),
                 lesson.getSubject().getName()
         );

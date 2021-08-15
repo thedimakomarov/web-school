@@ -35,7 +35,7 @@ public class LessonDto {
     @NotNull(message = "should be not null")
     private InnerTeacherDto teacher;
 
-    @NotNull(message = "should be not null")
+    @NotBlank(message = "should be not empty and not null")
     private String subject;
 
     public static LessonDto parse(Lesson lesson) {

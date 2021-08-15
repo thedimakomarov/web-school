@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
@@ -17,11 +18,5 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query(value = "UPDATE students SET team_id = null WHERE team_id = :team_id", nativeQuery = true)
     void eliminateAllFromTeam(@Param("team_id") Long teamId);
 
-    @Transactional
-    @Modifying
-    @Query(value = "UPDATE students SET team_id = " +
-            "(SELECT id FROM teams WHERE name = :team_name) " +
-            "WHERE id = :id",
-            nativeQuery = true)
-    void updateGroupForStudent(@Param("id") Long id, @Param("team_name") String teamName);
+    Optional<Student> findByFirstNameAndLastName(String firstName, String lastName);
 }

@@ -13,7 +13,9 @@ import java.util.List;
 @Log4j2
 @Service
 public record TeacherServiceImpl(TeacherRepository teacherRepository) implements TeacherService {
-    private static final String NOT_FOUND_MESSAGE = "Teacher with id - %d was not found. Choose another id from the list of existing teachers.";
+    private static final String NOT_FOUND_ID_MESSAGE = "Teacher with id - %d was not found. Choose another id from the list of existing teachers.";
+    private static final String NOT_FOUND_FULL_NAME_MESSAGE = "Teacher with firstName - '%s' and lastName - '%s' was not found. Choose another teacher from the list of existing teachers, or create new teacher with current parameters.";
+
 
     @Override
     public List<TeacherDto> findAll() {
@@ -27,7 +29,13 @@ public record TeacherServiceImpl(TeacherRepository teacherRepository) implements
         log.debug("TeacherService.findById(id-{})", id);
 
         return TeacherDto.parse(teacherRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_MESSAGE, id))));
+                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
+    }
+
+    @Override
+    public Teacher findByFullName(String firstName, String lastName) {
+        return teacherRepository.findByFirstNameAndLastName(firstName, lastName)
+                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_FULL_NAME_MESSAGE, firstName, lastName)));
     }
 
     @Override
@@ -60,7 +68,7 @@ public record TeacherServiceImpl(TeacherRepository teacherRepository) implements
 
     private void checkForExists(Long id) {
         if(notExists(id)) {
-            throw new NotFoundException(String.format(NOT_FOUND_MESSAGE, id));
+            throw new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id));
         }
     }
 

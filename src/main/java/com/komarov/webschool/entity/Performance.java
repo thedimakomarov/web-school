@@ -1,7 +1,6 @@
 package com.komarov.webschool.entity;
 
 import com.komarov.webschool.dto.PerformanceDto;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,16 +9,16 @@ import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
 
 @Entity(name = "Performance")
 @Table(name = "performances")
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id"})//TODO: avoid this annotation
 @Getter
 @Setter
-public class Performance implements Serializable {
+public class Performance extends AuditEntity<String> implements Serializable{
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -76,5 +75,18 @@ public class Performance implements Serializable {
         return marksDto.stream()
                 .map(Performance::parse)
                 .toList();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Performance that = (Performance) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

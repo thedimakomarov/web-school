@@ -1,7 +1,6 @@
 package com.komarov.webschool.entity;
 
 import com.komarov.webschool.dto.LessonDto;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,16 +9,16 @@ import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
 
 @Entity(name = "Lesson")
 @Table(name = "lessons")
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id"})//TODO: avoid this annotation
 @Getter
 @Setter
-public class Lesson implements Serializable {
+public class Lesson extends AuditEntity<String> implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -86,5 +85,18 @@ public class Lesson implements Serializable {
                 ", teacher=" + teacher.getFullName() +
                 ", subject=" + subject.getName() +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Lesson lesson = (Lesson) o;
+        return Objects.equals(id, lesson.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

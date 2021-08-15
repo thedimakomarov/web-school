@@ -6,7 +6,7 @@ import com.komarov.webschool.entity.Team;
 import com.komarov.webschool.exception.NotFoundException;
 import com.komarov.webschool.repository.StudentRepository;
 import com.komarov.webschool.repository.TeamRepository;
-import com.komarov.webschool.service.StudentsService;
+import com.komarov.webschool.service.StudentService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +15,9 @@ import java.util.List;
 @Log4j2
 @Service
 public record StudentServiceImpl(StudentRepository studentRepository,
-                                 TeamRepository teamRepository) implements StudentsService {
+                                 TeamRepository teamRepository) implements StudentService {
     private static final String NOT_FOUND_ID_MESSAGE = "Student with id - %d was not found. Choose another id from the list of existing students.";
+    private static final String NOT_FOUND_FULL_NAME_MESSAGE = "Student with firstName - '%s' and lastName - '%s' was not found. Choose another student from the list of existing students, or create new student with current parameters.";
     private static final String NOT_FOUND_TEAM_MESSAGE = "Student with team - '%s' was not found. Choose another team from the list of existing teams, or create new team with current name.";
 
     @Override
@@ -32,6 +33,12 @@ public record StudentServiceImpl(StudentRepository studentRepository,
 
         return StudentDto.parse(studentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
+    }
+
+    @Override
+    public Student findByFullName(String firstName, String lastName) {
+        return studentRepository.findByFirstNameAndLastName(firstName, lastName)
+                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_FULL_NAME_MESSAGE, firstName, lastName)));
     }
 
     @Override
