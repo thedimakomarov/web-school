@@ -1,5 +1,6 @@
 package com.komarov.webschool.service.implementaion;
 
+import com.komarov.webschool.dto.InnerLessonDto;
 import com.komarov.webschool.dto.LessonDto;
 import com.komarov.webschool.entity.Lesson;
 import com.komarov.webschool.entity.Subject;
@@ -23,6 +24,7 @@ public record LessonServiceImpl(LessonRepository lessonRepository,
                                 TeacherService teacherService,
                                 SubjectService subjectService) implements LessonService {
     private static final String NOT_FOUND_ID_MESSAGE = "Lesson with id - %d was not found. Choose another id from the list of existing lessons.";
+    private static final String NOT_FOUND_INNER_LESSON_MESSAGE = "Lesson with topic - '%s', team - '%s' and subject - '%s' was not found. Choose another lesson from the list of existing lessons, or create new lesson with current parameters.";
 
     @Override
     public List<LessonDto> findAll() {
@@ -37,6 +39,16 @@ public record LessonServiceImpl(LessonRepository lessonRepository,
 
         return LessonDto.parse(lessonRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
+    }
+
+    @Override
+    public Lesson findByInnerLesson(InnerLessonDto innerLessonDto) {
+        String topicToFindLesson = innerLessonDto.getTopic();
+        Team teamToFindLesson = teamService.findByName(innerLessonDto.getTeam());
+        Subject subjectToFindLesson = subjectService.findByName(innerLessonDto.getSubject());
+
+        return lessonRepository.findByTopicAndTeamAndSubject(topicToFindLesson, teamToFindLesson, subjectToFindLesson)
+                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_INNER_LESSON_MESSAGE, topicToFindLesson, teamToFindLesson, subjectToFindLesson)));
     }
 
     @Override

@@ -6,6 +6,7 @@ import lombok.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Setter
@@ -30,7 +31,7 @@ public class PerformanceDto {
     private Boolean isPresent;
 
     @NotNull
-//    @Size(max = 100, message = "should be bigger than -1 and smaller than 101")
+    @Size(max = 100, message = "should be bigger than -1 and smaller than 101")
     private Integer mark;
 
     public static PerformanceDto parse(Performance performance) {
