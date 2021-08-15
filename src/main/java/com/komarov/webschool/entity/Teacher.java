@@ -1,6 +1,5 @@
 package com.komarov.webschool.entity;
 
-import com.komarov.webschool.dto.TeacherDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,7 +7,6 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
 
 @Entity(name = "Teacher")
@@ -26,28 +24,9 @@ public class Teacher extends Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Teacher(Long id, String firstName, String lastName, String mobile) {
+    public Teacher(Long id, String firstName, String lastName, String mobile) {
         super(firstName, lastName, mobile);
         this.id = id;
-    }
-
-    public Teacher(String firstName, String lastName, String mobile) {
-        super(firstName, lastName, mobile);
-    }
-
-    public static Teacher parse(TeacherDto teacherDto) {
-        return new Teacher(
-                teacherDto.getId(),
-                teacherDto.getFirstName(),
-                teacherDto.getLastName(),
-                teacherDto.getMobile()
-        );
-    }
-
-    public static List<Teacher> parse(List<TeacherDto> teachersDto) {
-        return teachersDto.stream()
-                .map(Teacher::parse)
-                .toList();
     }
 
     public String getFullName() {

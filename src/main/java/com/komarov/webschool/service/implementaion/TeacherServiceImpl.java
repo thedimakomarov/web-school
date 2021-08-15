@@ -21,14 +21,14 @@ public record TeacherServiceImpl(TeacherRepository teacherRepository) implements
     public List<TeacherDto> findAll() {
         log.debug("TeacherService.findAll()");
 
-        return TeacherDto.parse(teacherRepository.findAll());
+        return parse(teacherRepository.findAll());
     }
 
     @Override
     public TeacherDto findById(Long id) {
         log.debug("TeacherService.findById(id-{})", id);
 
-        return TeacherDto.parse(teacherRepository.findById(id)
+        return parse(teacherRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
     }
 
@@ -43,7 +43,7 @@ public record TeacherServiceImpl(TeacherRepository teacherRepository) implements
         log.debug("TeacherService.create({})", teacherDto);
 
         Teacher teacherWithoutId = prepareForSaving(teacherDto);
-        return TeacherDto.parse(teacherRepository.save(teacherWithoutId));
+        return parse(teacherRepository.save(teacherWithoutId));
     }
 
     @Override
@@ -54,12 +54,35 @@ public record TeacherServiceImpl(TeacherRepository teacherRepository) implements
 
         Teacher teacherWithoutId = prepareForSaving(teacherDto);
         teacherWithoutId.setId(id);
-        return TeacherDto.parse(teacherRepository.save(teacherWithoutId));
+        return parse(teacherRepository.save(teacherWithoutId));
     }
 
     private Teacher prepareForSaving(TeacherDto teacherDtoWithoutId) {
-        Teacher teacherWithoutId = Teacher.parse(teacherDtoWithoutId);
-        return teacherWithoutId;
+        return parse(teacherDtoWithoutId);
+    }
+
+    private Teacher parse(TeacherDto teacherDto) {
+        return new Teacher(
+                teacherDto.getId(),
+                teacherDto.getFirstName(),
+                teacherDto.getLastName(),
+                teacherDto.getMobile()
+        );
+    }
+
+    private TeacherDto parse(Teacher teacher) {
+        return new TeacherDto(
+                teacher.getId(),
+                teacher.getFirstName(),
+                teacher.getLastName(),
+                teacher.getMobile()
+        );
+    }
+
+    private List<TeacherDto> parse(List<Teacher> teachers) {
+        return teachers.stream()
+                .map(this::parse)
+                .toList();
     }
 
     @Override

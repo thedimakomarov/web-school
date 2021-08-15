@@ -1,6 +1,5 @@
 package com.komarov.webschool.entity;
 
-import com.komarov.webschool.dto.SubjectDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,7 +8,6 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
 
 @Entity(name = "Subject")
@@ -31,26 +29,9 @@ public class Subject extends AuditEntity<String> implements Serializable {
     @Column(name = "name", unique = true)
     private String name;
 
-    public Subject(String name) {
-        this.name = name;
-    }
-
-    private Subject(Long id, String name) {
+    public Subject(Long id, String name) {
         this.id = id;
         this.name = name;
-    }
-
-    public static Subject parse(SubjectDto subjectDto) {
-        return new Subject(
-                subjectDto.getId(),
-                subjectDto.getName()
-        );
-    }
-
-    public static List<Subject> parse(List<SubjectDto> subjectsDto) {
-        return subjectsDto.stream()
-                .map(Subject::parse)
-                .toList();
     }
 
     @Override

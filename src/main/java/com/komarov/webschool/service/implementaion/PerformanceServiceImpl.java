@@ -1,5 +1,6 @@
 package com.komarov.webschool.service.implementaion;
 
+import com.komarov.webschool.dto.InnerLessonDto;
 import com.komarov.webschool.dto.InnerStudentDto;
 import com.komarov.webschool.dto.PerformanceDto;
 import com.komarov.webschool.entity.Lesson;
@@ -28,14 +29,14 @@ public record PerformanceServiceImpl(StudentService studentService,
     public List<PerformanceDto> findAll() {
         log.debug("MarkService.findAll()");
 
-        return PerformanceDto.parse(performanceRepository.findAll());
+        return parse(performanceRepository.findAll());
     }
 
     @Override
     public PerformanceDto findById(Long id) {
         log.debug("MarkService.findById(id-{})", id);
 
-        return PerformanceDto.parse(performanceRepository.findById(id)
+        return parse(performanceRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
     }
 
@@ -46,7 +47,7 @@ public record PerformanceServiceImpl(StudentService studentService,
         checkСonsistencyMarkAndPresenting(progressDto);
 
         Performance performance = prepareForSaving(progressDto);
-        return PerformanceDto.parse(performanceRepository.save(performance));
+        return parse(performanceRepository.save(performance));
     }
 
     @Override
@@ -58,7 +59,7 @@ public record PerformanceServiceImpl(StudentService studentService,
 
         Performance performance = prepareForSaving(progressDto);
         performance.setId(id);
-        return PerformanceDto.parse(performanceRepository.save(performance));
+        return parse(performanceRepository.save(performance));
     }
 
     private Performance prepareForSaving(PerformanceDto progressDto) {
@@ -67,10 +68,33 @@ public record PerformanceServiceImpl(StudentService studentService,
         InnerStudentDto studentDto = progressDto.getStudent();
         Student studentForPerformance = studentService.findByFullName(studentDto.getFirstName(), studentDto.getLastName());
 
-        Performance performance = Performance.parse(progressDto);
+        Performance performance = parse(progressDto);
         performance.setLesson(lessonForPerformance);
         performance.setStudent(studentForPerformance);
         return performance;
+    }
+
+    private Performance parse(PerformanceDto progressDto) {
+        return new Performance(
+                progressDto.getIsPresent(),
+                progressDto.getMark()
+        );
+    }
+
+    private PerformanceDto parse(Performance performance) {
+        return new PerformanceDto(
+                performance.getId(),
+                InnerStudentDto.parse(performance.getStudent()),
+                InnerLessonDto.parse(performance.getLesson()),
+                performance.getIsPresent(),
+                performance.getMark()
+        );
+    }
+
+    private List<PerformanceDto> parse(List<Performance> performances) {
+        return performances.stream()
+                .map(this::parse)
+                .toList();
     }
 
     @Override

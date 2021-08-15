@@ -24,14 +24,14 @@ public record StudentServiceImpl(StudentRepository studentRepository,
     public List<StudentDto> findAll() {
         log.debug("StudentServiceImpl.findAll()");
 
-        return StudentDto.parse(studentRepository.findAll());
+        return parse(studentRepository.findAll());
     }
 
     @Override
     public StudentDto findById(Long id) {
         log.debug("StudentService.findById(id-{})", id);
 
-        return StudentDto.parse(studentRepository.findById(id)
+        return parse(studentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
     }
 
@@ -46,7 +46,7 @@ public record StudentServiceImpl(StudentRepository studentRepository,
         log.debug("StudentService.create({})", studentDto);
 
         Student student = prepareForSaving(studentDto);
-        return StudentDto.parse(studentRepository.save(student));
+        return parse(studentRepository.save(student));
     }
 
     @Override
@@ -57,15 +57,40 @@ public record StudentServiceImpl(StudentRepository studentRepository,
 
         Student student = prepareForSaving(studentDto);
         student.setId(id);
-        return StudentDto.parse(studentRepository.save(student));
+        return parse(studentRepository.save(student));
     }
 
     private Student prepareForSaving(StudentDto studentDtoWithoutId) {
         Team team = teamService.findByName(studentDtoWithoutId.getTeam());
 
-        Student student = Student.parse(studentDtoWithoutId);
+        Student student = parse(studentDtoWithoutId);
         student.setTeam(team);
         return student;
+    }
+
+    private Student parse(StudentDto studentDto) {
+        return new Student(
+                studentDto.getId(),
+                studentDto.getFirstName(),
+                studentDto.getLastName(),
+                studentDto.getMobile()
+        );
+    }
+
+    private StudentDto parse(Student student) {
+        return new StudentDto(
+                student.getId(),
+                student.getFirstName(),
+                student.getLastName(),
+                student.getMobile(),
+                student.getTeam()!=null ? student.getTeam().getName() : null
+        );
+    }
+
+    private List<StudentDto> parse(List<Student> students) {
+        return students.stream()
+                .map(this::parse)
+                .toList();
     }
 
     @Override

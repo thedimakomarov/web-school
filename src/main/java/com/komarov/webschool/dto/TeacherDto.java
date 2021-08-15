@@ -1,6 +1,5 @@
 package com.komarov.webschool.dto;
 
-import com.komarov.webschool.entity.Teacher;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +8,6 @@ import lombok.ToString;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
-import java.util.List;
 
 @Setter
 @Getter
@@ -31,22 +29,7 @@ public class TeacherDto {
     @Pattern(regexp = "\\d{9}", message = "should have 9 characters")
     private String mobile;
 
-    public static TeacherDto parse(Teacher teacher) {
-        return new TeacherDto(
-                teacher.getId(),
-                teacher.getFirstName(),
-                teacher.getLastName(),
-                teacher.getMobile()
-        );
-    }
-
-    public static List<TeacherDto> parse(List<Teacher> teachers) {
-        return teachers.stream()
-                .map(TeacherDto::parse)
-                .toList();
-    }
-
-    private TeacherDto(Long id, String firstName, String lastName, String mobile) {
+    public TeacherDto(Long id, String firstName, String lastName, String mobile) {
         this.id = id;
         this.firstName = firstName.toLowerCase();
         this.lastName = lastName.toLowerCase();

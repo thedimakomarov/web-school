@@ -1,6 +1,5 @@
 package com.komarov.webschool.dto;
 
-import com.komarov.webschool.entity.Subject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +8,6 @@ import lombok.ToString;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
-import java.util.List;
 
 @Setter
 @Getter
@@ -24,20 +22,7 @@ public class SubjectDto {
     @Pattern(regexp = "(?m)^[^0-9_]{2,}$", message = "should be not empty, have at least 2 characters, not contain numbers or '_'")
     private String name;
 
-    public static SubjectDto parse(Subject subject) {
-        return new SubjectDto(
-                subject.getId(),
-                subject.getName()
-        );
-    }
-
-    public static List<SubjectDto> parse(List<Subject> subjects) {
-        return subjects.stream()
-                .map(SubjectDto::parse)
-                .toList();
-    }
-
-    private SubjectDto(Long id, String name) {
+    public SubjectDto(Long id, String name) {
         this.id = id;
         this.name = name.toLowerCase();
     }

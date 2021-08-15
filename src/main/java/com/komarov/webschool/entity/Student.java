@@ -1,6 +1,5 @@
 package com.komarov.webschool.entity;
 
-import com.komarov.webschool.dto.StudentDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,7 +7,6 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
@@ -35,28 +33,9 @@ public class Student extends Person implements Serializable {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    private Student(Long id, String firstName, String lastName, String mobile) {
+    public Student(Long id, String firstName, String lastName, String mobile) {
         super(firstName, lastName, mobile);
         this.id = id;
-    }
-
-    public Student(String firstName, String lastName, String mobile) {
-        super(firstName, lastName, mobile);
-    }
-
-    public static Student parse(StudentDto studentDto) {
-        return new Student(
-                studentDto.getId(),
-                studentDto.getFirstName(),
-                studentDto.getLastName(),
-                studentDto.getMobile()
-        );
-    }
-
-    public static List<Student> parse(List<StudentDto> studentsDto) {
-        return studentsDto.stream()
-                .map(Student::parse)
-                .toList();
     }
 
     @Override

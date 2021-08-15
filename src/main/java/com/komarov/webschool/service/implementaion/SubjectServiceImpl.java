@@ -22,14 +22,14 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
     public List<SubjectDto> findAll() {
         log.debug("SubjectServiceImpl.findAll()");
 
-        return SubjectDto.parse(subjectRepository.findAll());
+        return parse(subjectRepository.findAll());
     }
 
     @Override
     public SubjectDto findById(Long id) {
         log.debug("SubjectService.findById(id-{})", id);
 
-        return SubjectDto.parse(subjectRepository.findById(id)
+        return parse(subjectRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
     }
 
@@ -46,7 +46,7 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
         checkForDuplicate(subjectDto.getName());
 
         Subject subjectWithoutId = prepareForSaving(subjectDto);
-        return SubjectDto.parse(subjectRepository.save(subjectWithoutId));
+        return parse(subjectRepository.save(subjectWithoutId));
     }
 
     @Override
@@ -58,12 +58,31 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
 
         Subject subjectWithoutId = prepareForSaving(subjectDto);
         subjectWithoutId.setId(id);
-        return SubjectDto.parse(subjectRepository.save(subjectWithoutId));
+        return parse(subjectRepository.save(subjectWithoutId));
     }
 
     private Subject prepareForSaving(SubjectDto subjectDtoWithoutId) {
-        Subject subjectWithoutId = Subject.parse(subjectDtoWithoutId);
-        return subjectWithoutId;
+        return parse(subjectDtoWithoutId);
+    }
+
+    private Subject parse(SubjectDto subjectDto) {
+        return new Subject(
+                subjectDto.getId(),
+                subjectDto.getName()
+        );
+    }
+
+    private SubjectDto parse(Subject subject) {
+        return new SubjectDto(
+                subject.getId(),
+                subject.getName()
+        );
+    }
+
+    private List<SubjectDto> parse(List<Subject> subjects) {
+        return subjects.stream()
+                .map(this::parse)
+                .toList();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.komarov.webschool.service.implementaion;
 
 import com.komarov.webschool.dto.InnerLessonDto;
+import com.komarov.webschool.dto.InnerTeacherDto;
 import com.komarov.webschool.dto.LessonDto;
 import com.komarov.webschool.entity.Lesson;
 import com.komarov.webschool.entity.Subject;
@@ -30,14 +31,14 @@ public record LessonServiceImpl(LessonRepository lessonRepository,
     public List<LessonDto> findAll() {
         log.debug("LessonService.findAll()");
 
-        return LessonDto.parse(lessonRepository.findAll());
+        return parse(lessonRepository.findAll());
     }
 
     @Override
     public LessonDto findById(Long id) {
         log.debug("LessonService.findById(id-{})", id);
 
-        return LessonDto.parse(lessonRepository.findById(id)
+        return parse(lessonRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
     }
 
@@ -56,7 +57,7 @@ public record LessonServiceImpl(LessonRepository lessonRepository,
         log.debug("LessonService.create({})", lessonDto);
 
         Lesson lesson = prepareForSaving(lessonDto);
-        return LessonDto.parse(lessonRepository.save(lesson));
+        return parse(lessonRepository.save(lesson));
     }
 
     @Override
@@ -67,7 +68,7 @@ public record LessonServiceImpl(LessonRepository lessonRepository,
 
         Lesson lesson = prepareForSaving(lessonDto);
         lesson.setId(id);
-        return LessonDto.parse(lessonRepository.save(lesson));
+        return parse(lessonRepository.save(lesson));
     }
 
     private Lesson prepareForSaving(LessonDto lessonDtoWithoutId) {
@@ -75,11 +76,35 @@ public record LessonServiceImpl(LessonRepository lessonRepository,
         Teacher teacher = teacherService.findByFullName(lessonDtoWithoutId.getTeacher().getFirstName(), lessonDtoWithoutId.getTeacher().getLastName());
         Subject subject = subjectService.findByName(lessonDtoWithoutId.getSubject());
 
-        Lesson lesson = Lesson.parse(lessonDtoWithoutId);
+        Lesson lesson = parse(lessonDtoWithoutId);
         lesson.setTeam(team);
         lesson.setTeacher(teacher);
         lesson.setSubject(subject);
         return lesson;
+    }
+
+    private Lesson parse(LessonDto lessonDto) {
+        return new Lesson(
+                lessonDto.getId(),
+                lessonDto.getTopic(),
+                lessonDto.getDate());
+    }
+
+    public LessonDto parse(Lesson lesson) {
+        return new LessonDto(
+                lesson.getId(),
+                lesson.getTopic(),
+                lesson.getDate(),
+                lesson.getTeam().getName(),
+                InnerTeacherDto.parse(lesson.getTeacher()),
+                lesson.getSubject().getName()
+        );
+    }
+
+    public List<LessonDto> parse(List<Lesson> lessons) {
+        return lessons.stream()
+                .map(this::parse)
+                .toList();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.komarov.webschool.entity;
 
-import com.komarov.webschool.dto.LessonDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -55,25 +54,10 @@ public class Lesson extends AuditEntity<String> implements Serializable {
     @JoinColumn(name = "subject_id")
     private Subject subject;
 
-    public Lesson(String topic, Instant date, Team team, Teacher teacher, Subject subject) {
-        this.topic = topic;
-        this.date = date;
-        this.team = team;
-        this.teacher = teacher;
-        this.subject = subject;
-    }
-
-    private Lesson(Long id, String topic, Instant date) {
+    public Lesson(Long id, String topic, Instant date) {
         this.id = id;
         this.topic = topic;
         this.date = date;
-    }
-
-    public static Lesson parse(LessonDto lessonDto) {
-        return new Lesson(
-                lessonDto.getId(),
-                lessonDto.getTopic(),
-                lessonDto.getDate());
     }
 
     @Override

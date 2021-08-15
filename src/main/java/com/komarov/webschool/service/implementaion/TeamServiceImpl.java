@@ -23,14 +23,14 @@ public record TeamServiceImpl(TeamRepository teamRepository, StudentRepository s
     public List<TeamDto> findAll() {
         log.debug("TeamService.findAll()");
 
-        return TeamDto.parse(teamRepository.findAll());
+        return parse(teamRepository.findAll());
     }
 
     @Override
     public TeamDto findById(Long id) {
         log.debug("TeamService.findById(id-{})", id);
 
-        return TeamDto.parse(teamRepository.findById(id)
+        return parse(teamRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
     }
 
@@ -47,7 +47,7 @@ public record TeamServiceImpl(TeamRepository teamRepository, StudentRepository s
         checkForDuplicate(teamDto.getName());
 
         Team team = prepareForSaving(teamDto);
-        return TeamDto.parse(teamRepository.save(team));
+        return parse(teamRepository.save(team));
     }
 
     @Override
@@ -59,12 +59,31 @@ public record TeamServiceImpl(TeamRepository teamRepository, StudentRepository s
 
         Team team = prepareForSaving(teamDto);
         team.setId(id);
-        return TeamDto.parse(teamRepository.save(team));
+        return parse(teamRepository.save(team));
     }
 
     private Team prepareForSaving(TeamDto teamDto) {
-        Team team = Team.parse(teamDto);
-        return team;
+        return parse(teamDto);
+    }
+
+    private static Team parse(TeamDto teamDto) {
+        return new Team(
+                teamDto.getId(),
+                teamDto.getName()
+        );
+    }
+
+    private TeamDto parse(Team team) {
+        return new TeamDto(
+                team.getId(),
+                team.getName()
+        );
+    }
+
+    private List<TeamDto> parse(List<Team> teams) {
+        return teams.stream()
+                .map(this::parse)
+                .toList();
     }
 
     @Override
