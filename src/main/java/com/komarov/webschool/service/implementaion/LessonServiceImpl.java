@@ -23,8 +23,8 @@ public record LessonServiceImpl(LessonRepository lessonRepository,
                                 TeamService teamService,
                                 TeacherService teacherService,
                                 SubjectService subjectService) implements LessonService {
-    private static final String NOT_FOUND_ID_MESSAGE = "Lesson with id - %d was not found. Choose another id from the list of existing lessons.";
-    private static final String NOT_FOUND_INNER_LESSON_MESSAGE = "Lesson with topic - '%s', team - '%s' and subject - '%s' was not found. Choose another lesson from the list of existing lessons, or create new lesson with current parameters.";
+    private static final String NOT_FOUND_ID_MESSAGE = "Lesson with id - %d was not found. Choose another or create new lesson with current parameters.";
+    private static final String NOT_FOUND_INNER_LESSON_MESSAGE = "Lesson with topic - '%s', team - '%s' and subject - '%s' was not found. Choose another or create new lesson with current parameters.";
 
     @Override
     public List<LessonDto> findAll() {

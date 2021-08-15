@@ -13,8 +13,8 @@ import java.util.List;
 @Log4j2
 @Service
 public record TeacherServiceImpl(TeacherRepository teacherRepository) implements TeacherService {
-    private static final String NOT_FOUND_ID_MESSAGE = "Teacher with id - %d was not found. Choose another id from the list of existing teachers.";
-    private static final String NOT_FOUND_FULL_NAME_MESSAGE = "Teacher with firstName - '%s' and lastName - '%s' was not found. Choose another teacher from the list of existing teachers, or create new teacher with current parameters.";
+    private static final String NOT_FOUND_ID_MESSAGE = "Teacher with id - %d was not found. Choose another or create new teacher with current parameters.";
+    private static final String NOT_FOUND_FULL_NAME_MESSAGE = "Teacher with firstName - '%s' and lastName - '%s' was not found. Choose another or create new teacher with current parameters.";
 
 
     @Override

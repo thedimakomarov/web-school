@@ -21,7 +21,7 @@ import java.util.List;
 public record PerformanceServiceImpl(StudentService studentService,
                                      LessonService lessonService,
                                      PerformanceRepository performanceRepository) implements PerformanceService {
-    private static final String NOT_FOUND_ID_MESSAGE = "Mark with id - %d was not found. Choose another id from the list of existing marks.";
+    private static final String NOT_FOUND_ID_MESSAGE = "Performance with id - %d was not found. Choose another or create new performance with current parameters.";
     private static final String NOT_PRESENT_STUDENT_HAS_MARK = "Not present student can have only zero as mark.";
 
     @Override

@@ -15,8 +15,8 @@ import java.util.List;
 @Log4j2
 @Service
 public record TeamServiceImpl(TeamRepository teamRepository, StudentRepository studentRepository) implements TeamService {
-    private static final String NOT_FOUND_ID_MESSAGE = "Team with id - %d was not found. Choose another id from the list of existing teams.";
-    private static final String NOT_FOUND_NAME_MESSAGE = "Team with name - '%s' was not found. Choose another team from the list of existing teams, or create new team with current name.";
+    private static final String NOT_FOUND_ID_MESSAGE = "Team with id - %d was not found. Choose another or create new team with current parameters.";
+    private static final String NOT_FOUND_NAME_MESSAGE = "Team with name - '%s' was not found. Choose another or create new team with current parameters.";
     private static final String DUPLICATE_MESSAGE = "Team with name - %s already exists. Choose another name for team.";
 
     @Override

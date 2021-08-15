@@ -14,8 +14,8 @@ import java.util.List;
 @Log4j2
 @Service
 public record SubjectServiceImpl(SubjectRepository subjectRepository) implements SubjectService {
-    private static final String NOT_FOUND_ID_MESSAGE = "Subject with id - %d was not found. Choose another id from the list of existing subjects.";
-    private static final String NOT_FOUND_NAME_MESSAGE = "Subject with name - '%s' was not found. Choose another subject from the list of existing subjects, or create new subject with current name.";
+    private static final String NOT_FOUND_ID_MESSAGE = "Subject with id - %d was not found. Choose another or create new subject with current parameters.";
+    private static final String NOT_FOUND_NAME_MESSAGE = "Subject with name - '%s' was not found. Choose another or create new subject with current parameters.";
     private static final String DUPLICATE_MESSAGE = "Subject with name - %s already exists. Choose another name for subject.";
 
     @Override

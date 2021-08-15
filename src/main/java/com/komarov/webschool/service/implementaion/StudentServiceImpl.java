@@ -16,9 +16,10 @@ import java.util.List;
 @Service
 public record StudentServiceImpl(StudentRepository studentRepository,
                                  TeamRepository teamRepository) implements StudentService {
-    private static final String NOT_FOUND_ID_MESSAGE = "Student with id - %d was not found. Choose another id from the list of existing students.";
-    private static final String NOT_FOUND_FULL_NAME_MESSAGE = "Student with firstName - '%s' and lastName - '%s' was not found. Choose another student from the list of existing students, or create new student with current parameters.";
-    private static final String NOT_FOUND_TEAM_MESSAGE = "Student with team - '%s' was not found. Choose another team from the list of existing teams, or create new team with current name.";
+    private static final String NOT_FOUND_ID_MESSAGE = "Student with id - %d was not found. Choose another or create new student with current parameters.";
+    private static final String NOT_FOUND_FULL_NAME_MESSAGE =
+            "Student with firstName - '%s' and lastName - '%s' was not found. Choose another or create new student with current parameters.";
+    private static final String NOT_FOUND_TEAM_MESSAGE = "Student with team - '%s' was not found. Choose another or create new student with current parameters.";
 
     @Override
     public List<StudentDto> findAll() {
