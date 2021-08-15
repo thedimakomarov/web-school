@@ -1,3 +1,4 @@
+--TODO: make data more realistic
 INSERT INTO teachers(first_name, last_name, mobile)
 VALUES ('arnold', 'flannagan', '000000000'),
        ('debbie', 'adams', '000000000'),
