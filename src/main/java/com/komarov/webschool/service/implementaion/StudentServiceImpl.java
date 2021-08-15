@@ -5,8 +5,8 @@ import com.komarov.webschool.entity.Student;
 import com.komarov.webschool.entity.Team;
 import com.komarov.webschool.exception.NotFoundException;
 import com.komarov.webschool.repository.StudentRepository;
-import com.komarov.webschool.repository.TeamRepository;
 import com.komarov.webschool.service.StudentService;
+import com.komarov.webschool.service.TeamService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +15,10 @@ import java.util.List;
 @Log4j2
 @Service
 public record StudentServiceImpl(StudentRepository studentRepository,
-                                 TeamRepository teamRepository) implements StudentService {
+                                 TeamService teamService) implements StudentService {
     private static final String NOT_FOUND_ID_MESSAGE = "Student with id - %d was not found. Choose another or create new student with current parameters.";
     private static final String NOT_FOUND_FULL_NAME_MESSAGE =
             "Student with firstName - '%s' and lastName - '%s' was not found. Choose another or create new student with current parameters.";
-    private static final String NOT_FOUND_TEAM_MESSAGE = "Student with team - '%s' was not found. Choose another or create new student with current parameters.";
 
     @Override
     public List<StudentDto> findAll() {
@@ -46,7 +45,7 @@ public record StudentServiceImpl(StudentRepository studentRepository,
     public StudentDto create(StudentDto studentDtoWithoutId) {
         log.debug("StudentService.create({})", studentDtoWithoutId);
 
-        Team team = checkIfTeamPresentOrThrowException(studentDtoWithoutId.getTeam());
+        Team team = teamService.findByName(studentDtoWithoutId.getTeam());
 
         Student student = Student.parse(studentDtoWithoutId);
         student.setTeam(team);
@@ -59,7 +58,7 @@ public record StudentServiceImpl(StudentRepository studentRepository,
 
         checkForExists(id);
 
-        Team team = checkIfTeamPresentOrThrowException(studentDtoWithoutId.getTeam());
+        Team team = teamService.findByName(studentDtoWithoutId.getTeam());
 
         Student student = Student.parse(studentDtoWithoutId);
         student.setId(id);
@@ -67,27 +66,12 @@ public record StudentServiceImpl(StudentRepository studentRepository,
         return StudentDto.parse(studentRepository.save(student));
     }
 
-
-
     @Override
     public void deleteById(Long id) {
         log.debug("StudentService.deleteById(id-{})", id);
 
         checkForExists(id);
         studentRepository.deleteById(id);
-    }
-
-    @Override
-    public void eliminateAllFromTeam(Long teamId) {
-        studentRepository.eliminateAllFromTeam(teamId);
-    }
-
-    public Team checkIfTeamPresentOrThrowException(String teamName) {
-        if (teamName != null) {
-            return teamRepository.findByName(teamName)
-                    .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_TEAM_MESSAGE, teamName)));
-        }
-        return null;
     }
 
     private void checkForExists(Long id) {
