@@ -1,0 +1,16 @@
+all you need:
+
+1) create docker container:
+    $ docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest
+
+2) create project in sonarqube
+
+3) add to build.gradle
+    id 'org.sonarqube' version '3.3'
+
+4) execute command (credentials you can see after second step)
+    gradle sonarqube -Dsonar.projectKey=web-shool -Dsonar.host.url=http://localhost:9000 -Dsonar.login=256f4734582ea576ea385b38df27ba2f56d6f5a7
+
+
+instruction:
+https://docs.sonarqube.org/latest/setup/get-started-2-minutes/
