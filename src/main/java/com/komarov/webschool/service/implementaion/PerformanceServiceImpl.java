@@ -40,6 +40,7 @@ public record PerformanceServiceImpl(StudentService studentService,
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
     }
 
+    //TODO: add logic to check if student becomes for lesson's group
     @Override
     public PerformanceDto create(PerformanceDto progressDto) {
         log.debug("MarkService.create({})", progressDto);
@@ -50,6 +51,7 @@ public record PerformanceServiceImpl(StudentService studentService,
         return parse(performanceRepository.save(performance));
     }
 
+    //TODO: add logic to check if student becomes for lesson's group
     @Override
     public PerformanceDto update(Long id, PerformanceDto progressDto) {
         log.debug("MarkService.update({id-{},{}})", id, progressDto);

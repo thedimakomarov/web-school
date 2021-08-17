@@ -1,30 +1,38 @@
 CREATE TABLE IF NOT EXISTS teachers
 (
-    id         BIGSERIAL PRIMARY KEY,
-    first_name VARCHAR NOT NULL,
-    last_name  VARCHAR NOT NULL,
-    mobile     VARCHAR
+    id               BIGSERIAL PRIMARY KEY,
+    first_name       VARCHAR NOT NULL,
+    last_name        VARCHAR NOT NULL,
+    mobile           VARCHAR,
+    last_modified_at TIMESTAMP,
+    last_modified_by VARCHAR
 );
 
 CREATE TABLE IF NOT EXISTS subjects
 (
-    id   BIGSERIAL PRIMARY KEY,
-    name VARCHAR NOT NULL
+    id               BIGSERIAL PRIMARY KEY,
+    name             VARCHAR NOT NULL,
+    last_modified_at TIMESTAMP,
+    last_modified_by VARCHAR
 );
 
 CREATE TABLE IF NOT EXISTS teams
 (
-    id   BIGSERIAL PRIMARY KEY,
-    name VARCHAR NOT NULL
+    id               BIGSERIAL PRIMARY KEY,
+    name             VARCHAR NOT NULL,
+    last_modified_at TIMESTAMP,
+    last_modified_by VARCHAR
 );
 
 CREATE TABLE IF NOT EXISTS students
 (
-    id         BIGSERIAL PRIMARY KEY,
-    first_name VARCHAR NOT NULL,
-    last_name  VARCHAR NOT NULL,
-    mobile     VARCHAR,
-    team_id    BIGINT,
+    id               BIGSERIAL PRIMARY KEY,
+    first_name       VARCHAR NOT NULL,
+    last_name        VARCHAR NOT NULL,
+    mobile           VARCHAR,
+    team_id          BIGINT,
+    last_modified_at TIMESTAMP,
+    last_modified_by VARCHAR,
     CONSTRAINT team_fk
         FOREIGN KEY (team_id)
             REFERENCES teams (id)
@@ -33,12 +41,14 @@ CREATE TABLE IF NOT EXISTS students
 
 CREATE TABLE IF NOT EXISTS lessons
 (
-    id         BIGSERIAL PRIMARY KEY,
-    topic      VARCHAR   NOT NULL,
-    date       TIMESTAMP NOT NULL,
-    team_id    BIGINT    NOT NULL,
-    teacher_id BIGINT    NOT NULL,
-    subject_id BIGINT    NOT NULL,
+    id               BIGSERIAL PRIMARY KEY,
+    topic            VARCHAR   NOT NULL,
+    date             TIMESTAMP NOT NULL,
+    team_id          BIGINT    NOT NULL,
+    teacher_id       BIGINT    NOT NULL,
+    subject_id       BIGINT    NOT NULL,
+    last_modified_at TIMESTAMP,
+    last_modified_by VARCHAR,
     CONSTRAINT team_fk
         FOREIGN KEY (team_id)
             REFERENCES teams (id)
@@ -55,11 +65,13 @@ CREATE TABLE IF NOT EXISTS lessons
 
 CREATE TABLE IF NOT EXISTS performances
 (
-    id         BIGSERIAL PRIMARY KEY,
-    is_present BOOLEAN NOT NULL,
-    mark       INT     NOT NULL,
-    student_id BIGINT  NOT NULL,
-    lesson_id  BIGINT  NOT NULL,
+    id               BIGSERIAL PRIMARY KEY,
+    is_present       BOOLEAN NOT NULL,
+    mark             INT     NOT NULL,
+    student_id       BIGINT  NOT NULL,
+    lesson_id        BIGINT  NOT NULL,
+    last_modified_at TIMESTAMP,
+    last_modified_by VARCHAR,
     CONSTRAINT student_fk
         FOREIGN KEY (student_id)
             REFERENCES students (id)
