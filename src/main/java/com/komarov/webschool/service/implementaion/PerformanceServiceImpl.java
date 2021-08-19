@@ -26,14 +26,14 @@ public record PerformanceServiceImpl(StudentService studentService,
     private static final String NOT_PRESENT_STUDENT_HAS_MARK = "Not present student can have only zero as mark.";
 
     @Override
-    public List<PerformanceDto> findAll() {
+    public List<PerformanceDto> findDtoAll() {
         log.debug("MarkService.findAll()");
 
         return parse(performanceRepository.findAll());
     }
 
     @Override
-    public PerformanceDto findById(Long id) {
+    public PerformanceDto findDtoById(Long id) {
         log.debug("MarkService.findById(id-{})", id);
 
         return parse(performanceRepository.findById(id)

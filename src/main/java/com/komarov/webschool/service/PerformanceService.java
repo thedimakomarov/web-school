@@ -5,8 +5,8 @@ import com.komarov.webschool.dto.PerformanceDto;
 import java.util.List;
 
 public interface PerformanceService {
-    List<PerformanceDto> findAll();
-    PerformanceDto findById(Long id);
+    List<PerformanceDto> findDtoAll();
+    PerformanceDto findDtoById(Long id);
     PerformanceDto create(PerformanceDto progressDto);
     PerformanceDto update(Long id, PerformanceDto progressDto);
     void deleteById(Long id);

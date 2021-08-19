@@ -17,14 +17,14 @@ public record TeamController(TeamService service) {
     public ResponseEntity<List<TeamDto>> findAll() {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.findAll());
+                .body(service.findAllDto());
     }
 
     @GetMapping(path = "{id}")
     public ResponseEntity<TeamDto> findById(@PathVariable Long id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.findById(id));
+                .body(service.findDtoById(id));
     }
 
     @PostMapping

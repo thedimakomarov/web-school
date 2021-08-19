@@ -1,9 +1,6 @@
 package com.komarov.webschool.dto;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
@@ -13,6 +10,7 @@ import javax.validation.constraints.Pattern;
 @Getter
 @ToString
 @EqualsAndHashCode
+@NoArgsConstructor
 public class SubjectDto {
 
     @Null(message = "should be null")
@@ -24,6 +22,10 @@ public class SubjectDto {
 
     public SubjectDto(Long id, String name) {
         this.id = id;
+        this.name = name.toLowerCase();
+    }
+
+    public SubjectDto(String name) {
         this.name = name.toLowerCase();
     }
 }

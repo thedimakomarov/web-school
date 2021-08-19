@@ -18,18 +18,23 @@ public record TeacherServiceImpl(TeacherRepository teacherRepository) implements
 
 
     @Override
-    public List<TeacherDto> findAll() {
+    public List<TeacherDto> findAllDto() {
         log.debug("TeacherService.findAll()");
 
         return parse(teacherRepository.findAll());
     }
 
     @Override
-    public TeacherDto findById(Long id) {
+    public TeacherDto findDtoById(Long id) {
         log.debug("TeacherService.findById(id-{})", id);
 
         return parse(teacherRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
+    }
+
+    @Override
+    public TeacherDto findDtoByFullName(String firstName, String lastName) {
+        return parse(findByFullName(firstName, lastName));
     }
 
     @Override

@@ -6,8 +6,9 @@ import com.komarov.webschool.entity.Student;
 import java.util.List;
 
 public interface StudentService {
-    List<StudentDto> findAll();
-    StudentDto findById(Long id);
+    List<StudentDto> findDtoAll();
+    StudentDto findDtoById(Long id);
+    StudentDto findDtoByFullName(String firstName, String lastName);
     Student findByFullName(String firstName, String lastName);
     StudentDto create(StudentDto studentDtoWithoutId);
     StudentDto update(Long id, StudentDto studentDtoWithoutId);

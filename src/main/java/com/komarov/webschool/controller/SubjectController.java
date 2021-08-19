@@ -17,14 +17,14 @@ public record SubjectController(SubjectService service) {
     public ResponseEntity<List<SubjectDto>> findAll() {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.findAll());
+                .body(service.findAllDto());
     }
 
     @GetMapping(path = "{id}")
     public ResponseEntity<SubjectDto> findById(@PathVariable Long id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.findById(id));
+                .body(service.findDtoById(id));
     }
 
     @PostMapping

@@ -2,22 +2,23 @@ package com.komarov.webschool.dto;
 
 import com.komarov.webschool.entity.Lesson;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Null;
 import java.time.Instant;
-import java.util.List;
 
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class InnerLessonDto {
-    //TODO add id
     //TODO change logic in services
-    //TODO change validations
     //TODO check all toLowerCase()
+
+    private Long id;
 
     @NotBlank(message = "should be not empty and not null")
     private String topic;
@@ -42,12 +43,6 @@ public class InnerLessonDto {
                 InnerTeacherDto.parse(lesson.getTeacher()),
                 lesson.getSubject().getName()
         );
-    }
-
-    public static List<InnerLessonDto> parse(List<Lesson> lessons) {
-        return lessons.stream()
-                .map(InnerLessonDto::parse)
-                .toList();
     }
 
     public InnerLessonDto(String topic, Instant date, String team, InnerTeacherDto teacher, String subject) {

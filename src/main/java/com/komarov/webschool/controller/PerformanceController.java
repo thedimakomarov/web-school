@@ -17,14 +17,14 @@ public record PerformanceController(PerformanceService service) {
     public ResponseEntity<List<PerformanceDto>> findAll() {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.findAll());
+                .body(service.findDtoAll());
     }
 
     @GetMapping(path = "{id}")
     public ResponseEntity<PerformanceDto> findById(@PathVariable Long id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.findById(id));
+                .body(service.findDtoById(id));
     }
 
     @PostMapping

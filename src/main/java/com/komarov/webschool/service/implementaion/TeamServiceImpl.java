@@ -20,18 +20,23 @@ public record TeamServiceImpl(TeamRepository teamRepository, StudentRepository s
     private static final String DUPLICATE_MESSAGE = "Team with name - %s already exists. Choose another name for team.";
 
     @Override
-    public List<TeamDto> findAll() {
+    public List<TeamDto> findAllDto() {
         log.debug("TeamService.findAll()");
 
         return parse(teamRepository.findAll());
     }
 
     @Override
-    public TeamDto findById(Long id) {
+    public TeamDto findDtoById(Long id) {
         log.debug("TeamService.findById(id-{})", id);
 
         return parse(teamRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
+    }
+
+    @Override
+    public TeamDto findDtoByName(String teamName) {
+        return parse(findByName(teamName));
     }
 
     @Override

@@ -1,9 +1,6 @@
 package com.komarov.webschool.dto;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
@@ -13,6 +10,7 @@ import javax.validation.constraints.Pattern;
 @Setter
 @ToString
 @EqualsAndHashCode
+@NoArgsConstructor
 public class StudentDto {
 
     @Null(message = "should be null")
@@ -29,7 +27,7 @@ public class StudentDto {
     @Pattern(regexp = "\\d{9}", message = "should have 9 characters")
     private String mobile;
 
-    private String team;
+    private String team;//TODO: make team insert using id, not only by name
 
     public StudentDto(Long id, String firstName, String lastName, String mobile, String team) {
         this.id = id;

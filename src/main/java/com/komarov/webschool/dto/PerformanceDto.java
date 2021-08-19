@@ -12,6 +12,7 @@ import javax.validation.constraints.Size;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 public class PerformanceDto {
 
     @Null(message = "should be null")

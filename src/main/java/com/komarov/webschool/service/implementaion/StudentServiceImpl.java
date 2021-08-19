@@ -21,18 +21,23 @@ public record StudentServiceImpl(StudentRepository studentRepository,
             "Student with firstName - '%s' and lastName - '%s' was not found. Choose another or create new student with current parameters.";
 
     @Override
-    public List<StudentDto> findAll() {
+    public List<StudentDto> findDtoAll() {
         log.debug("StudentServiceImpl.findAll()");
 
         return parse(studentRepository.findAll());
     }
 
     @Override
-    public StudentDto findById(Long id) {
+    public StudentDto findDtoById(Long id) {
         log.debug("StudentService.findById(id-{})", id);
 
         return parse(studentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
+    }
+
+    @Override
+    public StudentDto findDtoByFullName(String firstName, String lastName) {
+        return parse(findByFullName(firstName, lastName));
     }
 
     @Override

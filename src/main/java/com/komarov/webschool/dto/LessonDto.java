@@ -1,9 +1,6 @@
 package com.komarov.webschool.dto;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -15,6 +12,7 @@ import java.time.Instant;
 @Getter
 @ToString
 @EqualsAndHashCode
+@NoArgsConstructor
 public class LessonDto {
 
     @Null(message = "should be null")
@@ -27,14 +25,14 @@ public class LessonDto {
     private Instant date;
 
     @NotBlank(message = "should be not empty and not null")
-    private String team;
+    private String team;//TODO: make team insert using id, not only by name
 
     @Valid
     @NotNull(message = "should be not null")
     private InnerTeacherDto teacher;
 
     @NotBlank(message = "should be not empty and not null")
-    private String subject;
+    private String subject;//TODO: make subject insert using id, not only by name
 
     public LessonDto(Long id, String topic, Instant date, String team, InnerTeacherDto teacher, String subject) {
         this.id = id;

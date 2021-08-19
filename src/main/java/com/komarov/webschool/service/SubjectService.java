@@ -6,8 +6,9 @@ import com.komarov.webschool.entity.Subject;
 import java.util.List;
 
 public interface SubjectService {
-    List<SubjectDto> findAll();
-    SubjectDto findById(Long id);
+    List<SubjectDto> findAllDto();
+    SubjectDto findDtoById(Long id);
+    SubjectDto findDtoByName(String subjectName);
     Subject findByName(String subjectName);
     SubjectDto create(SubjectDto subjectDtoWithoutId);
     SubjectDto update(Long id, SubjectDto subjectDtoWithoutId);

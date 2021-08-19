@@ -28,18 +28,23 @@ public record LessonServiceImpl(LessonRepository lessonRepository,
     private static final String NOT_FOUND_INNER_LESSON_MESSAGE = "Lesson with topic - '%s', team - '%s' and subject - '%s' was not found. Choose another or create new lesson with current parameters.";
 
     @Override
-    public List<LessonDto> findAll() {
+    public List<LessonDto> findDtoAll() {
         log.debug("LessonService.findAll()");
 
         return parse(lessonRepository.findAll());
     }
 
     @Override
-    public LessonDto findById(Long id) {
+    public LessonDto findDtoById(Long id) {
         log.debug("LessonService.findById(id-{})", id);
 
         return parse(lessonRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
+    }
+
+    @Override
+    public LessonDto findDtoByInnerLesson(InnerLessonDto innerLessonDto) {
+        return parse(findByInnerLesson(innerLessonDto));
     }
 
     @Override

@@ -6,8 +6,9 @@ import com.komarov.webschool.entity.Team;
 import java.util.List;
 
 public interface TeamService {
-    List<TeamDto> findAll();
-    TeamDto findById(Long id);
+    List<TeamDto> findAllDto();
+    TeamDto findDtoById(Long id);
+    TeamDto findDtoByName(String teamName);
     Team findByName(String teamName);
     TeamDto create(TeamDto teamDto);
     TeamDto update(Long id, TeamDto teamDto);

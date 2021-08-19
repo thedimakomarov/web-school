@@ -7,8 +7,9 @@ import com.komarov.webschool.entity.Lesson;
 import java.util.List;
 
 public interface LessonService {
-    List<LessonDto> findAll();
-    LessonDto findById(Long id);
+    List<LessonDto> findDtoAll();
+    LessonDto findDtoById(Long id);
+    LessonDto findDtoByInnerLesson(InnerLessonDto innerLessonDto);
     Lesson findByInnerLesson(InnerLessonDto innerLessonDto);
     LessonDto create(LessonDto lessonDtoWithoutId);
     LessonDto update(Long id, LessonDto lessonDtoWithoutId);

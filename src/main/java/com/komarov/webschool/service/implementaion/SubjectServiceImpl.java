@@ -19,18 +19,23 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
     private static final String DUPLICATE_MESSAGE = "Subject with name - %s already exists. Choose another name for subject.";
 
     @Override
-    public List<SubjectDto> findAll() {
+    public List<SubjectDto> findAllDto() {
         log.debug("SubjectServiceImpl.findAll()");
 
         return parse(subjectRepository.findAll());
     }
 
     @Override
-    public SubjectDto findById(Long id) {
+    public SubjectDto findDtoById(Long id) {
         log.debug("SubjectService.findById(id-{})", id);
 
         return parse(subjectRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
+    }
+
+    @Override
+    public SubjectDto findDtoByName(String subjectName) {
+        return parse(findByName(subjectName));
     }
 
     @Override
@@ -45,8 +50,8 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
 
         checkForDuplicate(subjectDto.getName());
 
-        Subject subjectWithoutId = prepareForSaving(subjectDto);
-        return parse(subjectRepository.save(subjectWithoutId));
+        Subject subject = prepareForSaving(subjectDto);
+        return parse(subjectRepository.save(subject));
     }
 
     @Override
@@ -56,9 +61,9 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
         checkForExists(id);
         checkForDuplicate(subjectDto.getName());
 
-        Subject subjectWithoutId = prepareForSaving(subjectDto);
-        subjectWithoutId.setId(id);
-        return parse(subjectRepository.save(subjectWithoutId));
+        Subject subject = prepareForSaving(subjectDto);
+        subject.setId(id);
+        return parse(subjectRepository.save(subject));
     }
 
     private Subject prepareForSaving(SubjectDto subjectDtoWithoutId) {
