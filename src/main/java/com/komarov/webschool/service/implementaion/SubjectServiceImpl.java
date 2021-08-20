@@ -6,29 +6,28 @@ import com.komarov.webschool.exception.DuplicateException;
 import com.komarov.webschool.exception.NotFoundException;
 import com.komarov.webschool.repository.SubjectRepository;
 import com.komarov.webschool.service.SubjectService;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Log4j2
 @Service
-public record SubjectServiceImpl(SubjectRepository subjectRepository) implements SubjectService {
+public class SubjectServiceImpl implements SubjectService {
     private static final String NOT_FOUND_ID_MESSAGE = "Subject with id - %d was not found. Choose another or create new subject with current parameters.";
     private static final String NOT_FOUND_NAME_MESSAGE = "Subject with name - '%s' was not found. Choose another or create new subject with current parameters.";
     private static final String DUPLICATE_MESSAGE = "Subject with name - %s already exists. Choose another name for subject.";
+    private final SubjectRepository subjectRepository;
+
+    public SubjectServiceImpl(SubjectRepository subjectRepository) {
+        this.subjectRepository = subjectRepository;
+    }
 
     @Override
     public List<SubjectDto> findAllDto() {
-        log.debug("SubjectServiceImpl.findAll()");
-
         return parse(subjectRepository.findAll());
     }
 
     @Override
     public SubjectDto findDtoById(Long id) {
-        log.debug("SubjectService.findById(id-{})", id);
-
         return parse(subjectRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
     }
@@ -46,8 +45,6 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
 
     @Override
     public SubjectDto create(SubjectDto subjectDto) {
-        log.debug("SubjectService.create({})", subjectDto);
-
         checkForDuplicate(subjectDto.getName());
 
         Subject subject = prepareForSaving(subjectDto);
@@ -56,8 +53,6 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
 
     @Override
     public SubjectDto update(Long id, SubjectDto subjectDto) {
-        log.debug("SubjectService.update(id-{},{})", id, subjectDto);
-
         checkForExists(id);
         checkForDuplicate(subjectDto.getName());
 
@@ -92,8 +87,6 @@ public record SubjectServiceImpl(SubjectRepository subjectRepository) implements
 
     @Override
     public void deleteById(Long id) {
-        log.debug("SubjectService.deleteById(id-{})", id);
-
         checkForExists(id);
 
         subjectRepository.deleteById(id);

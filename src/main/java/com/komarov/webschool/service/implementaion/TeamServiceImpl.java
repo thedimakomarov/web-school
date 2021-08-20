@@ -7,29 +7,30 @@ import com.komarov.webschool.exception.NotFoundException;
 import com.komarov.webschool.repository.StudentRepository;
 import com.komarov.webschool.repository.TeamRepository;
 import com.komarov.webschool.service.TeamService;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Log4j2
 @Service
-public record TeamServiceImpl(TeamRepository teamRepository, StudentRepository studentRepository) implements TeamService {
+public class TeamServiceImpl implements TeamService {
     private static final String NOT_FOUND_ID_MESSAGE = "Team with id - %d was not found. Choose another or create new team with current parameters.";
     private static final String NOT_FOUND_NAME_MESSAGE = "Team with name - '%s' was not found. Choose another or create new team with current parameters.";
     private static final String DUPLICATE_MESSAGE = "Team with name - %s already exists. Choose another name for team.";
+    private final TeamRepository teamRepository;
+    private final StudentRepository studentRepository;
+
+    public TeamServiceImpl(TeamRepository teamRepository, StudentRepository studentRepository) {
+        this.teamRepository = teamRepository;
+        this.studentRepository = studentRepository;
+    }
 
     @Override
     public List<TeamDto> findAllDto() {
-        log.debug("TeamService.findAll()");
-
         return parse(teamRepository.findAll());
     }
 
     @Override
     public TeamDto findDtoById(Long id) {
-        log.debug("TeamService.findById(id-{})", id);
-
         return parse(teamRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
     }
@@ -47,8 +48,6 @@ public record TeamServiceImpl(TeamRepository teamRepository, StudentRepository s
 
     @Override
     public TeamDto create(TeamDto teamDto) {
-        log.debug("TeamService.create({})", teamDto);
-
         checkForDuplicate(teamDto.getName());
 
         Team team = prepareForSaving(teamDto);
@@ -57,8 +56,6 @@ public record TeamServiceImpl(TeamRepository teamRepository, StudentRepository s
 
     @Override
     public TeamDto update(Long id, TeamDto teamDto) {
-        log.debug("TeamService.update(id-{},{})", id, teamDto);
-
         checkForExists(id);
         checkForDuplicate(teamDto.getName());
 
@@ -93,8 +90,6 @@ public record TeamServiceImpl(TeamRepository teamRepository, StudentRepository s
 
     @Override
     public void deleteById(Long id) {
-        log.debug("TeamService.deleteById(id-{})", id);
-
         checkForExists(id);
 
         studentRepository.eliminateAllFromTeam(id);

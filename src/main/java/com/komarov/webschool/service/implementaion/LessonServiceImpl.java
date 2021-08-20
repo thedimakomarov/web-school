@@ -13,31 +13,33 @@ import com.komarov.webschool.service.LessonService;
 import com.komarov.webschool.service.SubjectService;
 import com.komarov.webschool.service.TeacherService;
 import com.komarov.webschool.service.TeamService;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Log4j2
 @Service
-public record LessonServiceImpl(LessonRepository lessonRepository,
-                                TeamService teamService,
-                                TeacherService teacherService,
-                                SubjectService subjectService) implements LessonService {
+public class LessonServiceImpl implements LessonService {
     private static final String NOT_FOUND_ID_MESSAGE = "Lesson with id - %d was not found. Choose another or create new lesson with current parameters.";
     private static final String NOT_FOUND_INNER_LESSON_MESSAGE = "Lesson with topic - '%s', team - '%s' and subject - '%s' was not found. Choose another or create new lesson with current parameters.";
+    private final LessonRepository lessonRepository;
+    private final TeamService teamService;
+    private final TeacherService teacherService;
+    private final SubjectService subjectService;
+
+    public LessonServiceImpl(LessonRepository lessonRepository, TeamService teamService, TeacherService teacherService, SubjectService subjectService) {
+        this.lessonRepository = lessonRepository;
+        this.teamService = teamService;
+        this.teacherService = teacherService;
+        this.subjectService = subjectService;
+    }
 
     @Override
     public List<LessonDto> findDtoAll() {
-        log.debug("LessonService.findAll()");
-
         return parse(lessonRepository.findAll());
     }
 
     @Override
     public LessonDto findDtoById(Long id) {
-        log.debug("LessonService.findById(id-{})", id);
-
         return parse(lessonRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
     }
@@ -59,16 +61,12 @@ public record LessonServiceImpl(LessonRepository lessonRepository,
 
     @Override
     public LessonDto create(LessonDto lessonDto) {
-        log.debug("LessonService.create({})", lessonDto);
-
         Lesson lesson = prepareForSaving(lessonDto);
         return parse(lessonRepository.save(lesson));
     }
 
     @Override
     public LessonDto update(Long id, LessonDto lessonDto) {
-        log.debug("LessonService.update(id-{}, {})", id, lessonDto);
-
         checkForExists(id);
 
         Lesson lesson = prepareForSaving(lessonDto);
@@ -114,8 +112,6 @@ public record LessonServiceImpl(LessonRepository lessonRepository,
 
     @Override
     public void deleteById(Long id) {
-        log.debug("LessonService.deleteById(id-{})", id);
-
         checkForExists(id);
         lessonRepository.deleteById(id);
     }

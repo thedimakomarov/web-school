@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.AuditorAware;
@@ -15,6 +16,7 @@ import javax.sql.DataSource;
 import java.util.Optional;
 
 @Configuration
+@EnableAspectJAutoProxy(proxyTargetClass=true)
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 public class SchoolConfiguration {
 

@@ -5,29 +5,27 @@ import com.komarov.webschool.entity.Teacher;
 import com.komarov.webschool.exception.NotFoundException;
 import com.komarov.webschool.repository.TeacherRepository;
 import com.komarov.webschool.service.TeacherService;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Log4j2
 @Service
-public record TeacherServiceImpl(TeacherRepository teacherRepository) implements TeacherService {
+public class TeacherServiceImpl implements TeacherService {
     private static final String NOT_FOUND_ID_MESSAGE = "Teacher with id - %d was not found. Choose another or create new teacher with current parameters.";
     private static final String NOT_FOUND_FULL_NAME_MESSAGE = "Teacher with firstName - '%s' and lastName - '%s' was not found. Choose another or create new teacher with current parameters.";
+    private final TeacherRepository teacherRepository;
 
+    public TeacherServiceImpl(TeacherRepository teacherRepository) {
+        this.teacherRepository = teacherRepository;
+    }
 
     @Override
     public List<TeacherDto> findAllDto() {
-        log.debug("TeacherService.findAll()");
-
         return parse(teacherRepository.findAll());
     }
 
     @Override
     public TeacherDto findDtoById(Long id) {
-        log.debug("TeacherService.findById(id-{})", id);
-
         return parse(teacherRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
     }
@@ -45,16 +43,12 @@ public record TeacherServiceImpl(TeacherRepository teacherRepository) implements
 
     @Override
     public TeacherDto create(TeacherDto teacherDto) {
-        log.debug("TeacherService.create({})", teacherDto);
-
         Teacher teacherWithoutId = prepareForSaving(teacherDto);
         return parse(teacherRepository.save(teacherWithoutId));
     }
 
     @Override
     public TeacherDto update(Long id, TeacherDto teacherDto) {
-        log.debug("TeacherService.update(id-{},{})", id, teacherDto);
-
         checkForExists(id);
 
         Teacher teacherWithoutId = prepareForSaving(teacherDto);
@@ -92,8 +86,6 @@ public record TeacherServiceImpl(TeacherRepository teacherRepository) implements
 
     @Override
     public void deleteById(Long id) {
-        log.debug("TeacherService.update(id-{})", id);
-
         checkForExists(id);
 
         teacherRepository.deleteById(id);

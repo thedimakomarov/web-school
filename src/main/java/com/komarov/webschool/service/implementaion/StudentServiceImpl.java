@@ -7,30 +7,30 @@ import com.komarov.webschool.exception.NotFoundException;
 import com.komarov.webschool.repository.StudentRepository;
 import com.komarov.webschool.service.StudentService;
 import com.komarov.webschool.service.TeamService;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Log4j2
 @Service
-public record StudentServiceImpl(StudentRepository studentRepository,
-                                 TeamService teamService) implements StudentService {
+public class StudentServiceImpl implements StudentService {
     private static final String NOT_FOUND_ID_MESSAGE = "Student with id - %d was not found. Choose another or create new student with current parameters.";
     private static final String NOT_FOUND_FULL_NAME_MESSAGE =
             "Student with firstName - '%s' and lastName - '%s' was not found. Choose another or create new student with current parameters.";
+    private final StudentRepository studentRepository;
+    private final TeamService teamService;
+
+    public StudentServiceImpl(StudentRepository studentRepository, TeamService teamService) {
+        this.studentRepository = studentRepository;
+        this.teamService = teamService;
+    }
 
     @Override
     public List<StudentDto> findDtoAll() {
-        log.debug("StudentServiceImpl.findAll()");
-
         return parse(studentRepository.findAll());
     }
 
     @Override
     public StudentDto findDtoById(Long id) {
-        log.debug("StudentService.findById(id-{})", id);
-
         return parse(studentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
     }
@@ -48,16 +48,12 @@ public record StudentServiceImpl(StudentRepository studentRepository,
 
     @Override
     public StudentDto create(StudentDto studentDto) {
-        log.debug("StudentService.create({})", studentDto);
-
         Student student = prepareForSaving(studentDto);
         return parse(studentRepository.save(student));
     }
 
     @Override
     public StudentDto update(Long id, StudentDto studentDto) {
-        log.debug("StudentService.update(id-{},{})", id, studentDto);
-
         checkForExists(id);
 
         Student student = prepareForSaving(studentDto);
@@ -100,8 +96,6 @@ public record StudentServiceImpl(StudentRepository studentRepository,
 
     @Override
     public void deleteById(Long id) {
-        log.debug("StudentService.deleteById(id-{})", id);
-
         checkForExists(id);
         studentRepository.deleteById(id);
     }

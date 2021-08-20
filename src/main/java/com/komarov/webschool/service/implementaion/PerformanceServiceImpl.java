@@ -12,30 +12,31 @@ import com.komarov.webschool.repository.PerformanceRepository;
 import com.komarov.webschool.service.LessonService;
 import com.komarov.webschool.service.PerformanceService;
 import com.komarov.webschool.service.StudentService;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Log4j2
 @Service
-public record PerformanceServiceImpl(StudentService studentService,
-                                     LessonService lessonService,
-                                     PerformanceRepository performanceRepository) implements PerformanceService {
+public class PerformanceServiceImpl implements PerformanceService {
     private static final String NOT_FOUND_ID_MESSAGE = "Performance with id - %d was not found. Choose another or create new performance with current parameters.";
     private static final String NOT_PRESENT_STUDENT_HAS_MARK = "Not present student can have only zero as mark.";
+    private final StudentService studentService;
+    private final LessonService lessonService;
+    private final PerformanceRepository performanceRepository;
+
+    public PerformanceServiceImpl(StudentService studentService, LessonService lessonService, PerformanceRepository performanceRepository) {
+        this.studentService = studentService;
+        this.lessonService = lessonService;
+        this.performanceRepository = performanceRepository;
+    }
 
     @Override
     public List<PerformanceDto> findDtoAll() {
-        log.debug("MarkService.findAll()");
-
         return parse(performanceRepository.findAll());
     }
 
     @Override
     public PerformanceDto findDtoById(Long id) {
-        log.debug("MarkService.findById(id-{})", id);
-
         return parse(performanceRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
     }
@@ -43,8 +44,6 @@ public record PerformanceServiceImpl(StudentService studentService,
     //TODO: add logic to check if student becomes for lesson's group
     @Override
     public PerformanceDto create(PerformanceDto progressDto) {
-        log.debug("MarkService.create({})", progressDto);
-
         checkСonsistencyMarkAndPresenting(progressDto);
 
         Performance performance = prepareForSaving(progressDto);
@@ -54,8 +53,6 @@ public record PerformanceServiceImpl(StudentService studentService,
     //TODO: add logic to check if student becomes for lesson's group
     @Override
     public PerformanceDto update(Long id, PerformanceDto progressDto) {
-        log.debug("MarkService.update({id-{},{}})", id, progressDto);
-
         checkForExists(id);
         checkСonsistencyMarkAndPresenting(progressDto);
 
@@ -101,8 +98,6 @@ public record PerformanceServiceImpl(StudentService studentService,
 
     @Override
     public void deleteById(Long id) {
-        log.debug("MarkService.deleteById(id-{})", id);
-
         checkForExists(id);
 
         performanceRepository.deleteById(id);
