@@ -1,8 +1,6 @@
 package com.komarov.webschool.service.implementaion;
 
-import com.komarov.webschool.dto.InnerLessonDto;
-import com.komarov.webschool.dto.InnerTeacherDto;
-import com.komarov.webschool.dto.LessonDto;
+import com.komarov.webschool.dto.*;
 import com.komarov.webschool.entity.Lesson;
 import com.komarov.webschool.entity.Subject;
 import com.komarov.webschool.entity.Teacher;
@@ -21,6 +19,7 @@ import java.util.List;
 public class LessonServiceImpl implements LessonService {
     private static final String NOT_FOUND_ID_MESSAGE = "Lesson with id - %d was not found. Choose another or create new lesson with current parameters.";
     private static final String NOT_FOUND_INNER_LESSON_MESSAGE = "Lesson with topic - '%s', team - '%s' and subject - '%s' was not found. Choose another or create new lesson with current parameters.";
+    private static final String NOT_FOUND_NOT_ENOUGH_INFO = "Lesson was not found. Please enter valid id or valid topic and team and subject.";
     private final LessonRepository lessonRepository;
     private final TeamService teamService;
     private final TeacherService teacherService;
@@ -34,29 +33,54 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
+    public List<Lesson> findAll() {
+        return lessonRepository.findAll();
+    }
+
+    @Override
     public List<LessonDto> findDtoAll() {
-        return parse(lessonRepository.findAll());
+        return parse(findAll());
+    }
+
+    @Override
+    public Lesson findById(Long id) {
+        return lessonRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id)));
     }
 
     @Override
     public LessonDto findDtoById(Long id) {
-        return parse(lessonRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
+        return parse(findById(id));
     }
 
     @Override
-    public LessonDto findDtoByInnerLesson(InnerLessonDto innerLessonDto) {
-        return parse(findByInnerLesson(innerLessonDto));
+    public Lesson findByTopicAndTeamAndSubject(String topic, String team, String subject) {
+        Team teamToFindLesson = teamService.findByName(team);
+        Subject subjectToFindLesson = subjectService.findByName(subject);
+
+        return lessonRepository.findByTopicAndTeamAndSubject(topic, teamToFindLesson, subjectToFindLesson)
+                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_INNER_LESSON_MESSAGE, topic, teamToFindLesson, subjectToFindLesson)));
     }
 
     @Override
-    public Lesson findByInnerLesson(InnerLessonDto innerLessonDto) {
-        String topicToFindLesson = innerLessonDto.getTopic();
-        Team teamToFindLesson = teamService.findByName(innerLessonDto.getTeam());
-        Subject subjectToFindLesson = subjectService.findByName(innerLessonDto.getSubject());
+    public LessonDto findDtoByTopicAndTeamAndSubject(String topic, String team, String subject) {
+        return parse(findByTopicAndTeamAndSubject(topic, team, subject));
+    }
 
-        return lessonRepository.findByTopicAndTeamAndSubject(topicToFindLesson, teamToFindLesson, subjectToFindLesson)
-                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_INNER_LESSON_MESSAGE, topicToFindLesson, teamToFindLesson, subjectToFindLesson)));
+    @Override
+    public Lesson findLessonByInnerLessonDto(InnerLessonDto innerLessonDto) {
+        Long id = innerLessonDto.getId();
+        String topic = innerLessonDto.getTopic();
+        String team = innerLessonDto.getTeamName();
+        String subject = innerLessonDto.getSubjectName();
+
+        if(id != null) {
+            return findById(id);
+        } else if(topic != null && team != null && subject != null){
+            return findByTopicAndTeamAndSubject(topic, team, subject);
+        } else {
+            throw new NotFoundException(NOT_FOUND_NOT_ENOUGH_INFO);
+        }
     }
 
     @Override
@@ -74,12 +98,12 @@ public class LessonServiceImpl implements LessonService {
         return parse(lessonRepository.save(lesson));
     }
 
-    private Lesson prepareForSaving(LessonDto lessonDtoWithoutId) {
-        Team team = teamService.findByName(lessonDtoWithoutId.getTeam());
-        Teacher teacher = teacherService.findByFullName(lessonDtoWithoutId.getTeacher().getFirstName(), lessonDtoWithoutId.getTeacher().getLastName());
-        Subject subject = subjectService.findByName(lessonDtoWithoutId.getSubject());
+    private Lesson prepareForSaving(LessonDto lessonDto) {
+        Team team = teamService.findTeamByInnerTeamDto(lessonDto.getTeam());
+        Teacher teacher = teacherService.findTeacherByInnerTeacherDto(lessonDto.getTeacher());
+        Subject subject = subjectService.findSubjectByInnerSubjectDto(lessonDto.getSubject());
 
-        Lesson lesson = parse(lessonDtoWithoutId);
+        Lesson lesson = parse(lessonDto);
         lesson.setTeam(team);
         lesson.setTeacher(teacher);
         lesson.setSubject(subject);
@@ -98,9 +122,9 @@ public class LessonServiceImpl implements LessonService {
                 lesson.getId(),
                 lesson.getTopic(),
                 lesson.getDate(),
-                lesson.getTeam().getName(),
+                InnerTeamDto.parse(lesson.getTeam()),
                 InnerTeacherDto.parse(lesson.getTeacher()),
-                lesson.getSubject().getName()
+                InnerSubjectDto.parse(lesson.getSubject())
         );
     }
 

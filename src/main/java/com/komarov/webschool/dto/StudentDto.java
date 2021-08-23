@@ -27,13 +27,14 @@ public class StudentDto {
     @Pattern(regexp = "\\d{9}", message = "should have 9 characters")
     private String mobile;
 
-    private String team;//TODO: make team insert using id, not only by name
+    @NotNull
+    private InnerTeamDto team;
 
-    public StudentDto(Long id, String firstName, String lastName, String mobile, String team) {
+    public StudentDto(Long id, String firstName, String lastName, String mobile, InnerTeamDto team) {
         this.id = id;
         this.firstName = firstName.toLowerCase();
         this.lastName = lastName.toLowerCase();
         this.mobile = mobile;
-        this.team = team!=null ? team.toLowerCase() : null;
+        this.team = team;
     }
 }

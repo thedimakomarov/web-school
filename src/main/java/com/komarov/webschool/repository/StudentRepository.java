@@ -18,5 +18,5 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query(value = "UPDATE students SET team_id = null WHERE team_id = :team_id", nativeQuery = true)
     void eliminateAllFromTeam(@Param("team_id") Long teamId);
 
-    Optional<Student> findByFirstNameAndLastName(String firstName, String lastName);
+    Optional<Student> findByFirstNameAndLastNameAndTeamName(String firstName, String lastName, String teamName);
 }

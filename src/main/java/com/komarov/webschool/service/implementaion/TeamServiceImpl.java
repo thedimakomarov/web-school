@@ -1,5 +1,6 @@
 package com.komarov.webschool.service.implementaion;
 
+import com.komarov.webschool.dto.InnerTeamDto;
 import com.komarov.webschool.dto.TeamDto;
 import com.komarov.webschool.entity.Team;
 import com.komarov.webschool.exception.DuplicateException;
@@ -15,6 +16,7 @@ import java.util.List;
 public class TeamServiceImpl implements TeamService {
     private static final String NOT_FOUND_ID_MESSAGE = "Team with id - %d was not found. Choose another or create new team with current parameters.";
     private static final String NOT_FOUND_NAME_MESSAGE = "Team with name - '%s' was not found. Choose another or create new team with current parameters.";
+    private static final String NOT_FOUND_NOT_ENOUGH_INFO = "Team was not found. Please enter valid id or valid name.";
     private static final String DUPLICATE_MESSAGE = "Team with name - %s already exists. Choose another name for team.";
     private final TeamRepository teamRepository;
     private final StudentRepository studentRepository;
@@ -25,14 +27,30 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public List<Team> findAll() {
+        return teamRepository.findAll();
+    }
+
+    @Override
     public List<TeamDto> findAllDto() {
-        return parse(teamRepository.findAll());
+        return parse(findAll());
+    }
+
+    @Override
+    public Team findById(Long id) {
+        return teamRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id)));
     }
 
     @Override
     public TeamDto findDtoById(Long id) {
-        return parse(teamRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
+        return parse(findById(id));
+    }
+
+    @Override
+    public Team findByName(String teamName) {
+        return teamRepository.findByName(teamName)
+                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_NAME_MESSAGE, teamName)));
     }
 
     @Override
@@ -41,10 +59,18 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public Team findByName(String teamName) {
-        return teamRepository.findByName(teamName)
-                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_NAME_MESSAGE, teamName)));
-    }
+    public Team findTeamByInnerTeamDto(InnerTeamDto innerTeamDto) {
+        Long id = innerTeamDto.getId();
+        String name = innerTeamDto.getName();
+
+        if (id != null) {
+            return findById(id);
+        } else if (name != null) {
+            return findByName(name);
+        } else {
+            throw new NotFoundException(NOT_FOUND_NOT_ENOUGH_INFO);
+        }
+}
 
     @Override
     public TeamDto create(TeamDto teamDto) {
@@ -97,13 +123,13 @@ public class TeamServiceImpl implements TeamService {
     }
 
     private void checkForExists(Long id) {
-        if(notExists(id)) {
+        if (notExists(id)) {
             throw new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id));
         }
     }
 
     private void checkForDuplicate(String name) {
-        if(teamRepository.existsByName(name.toLowerCase())) {
+        if (teamRepository.existsByName(name.toLowerCase())) {
             throw new DuplicateException(String.format(DUPLICATE_MESSAGE, name));
         }
     }

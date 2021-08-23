@@ -32,6 +32,42 @@ class SubjectServiceImplTest {
     }
 
     @Test
+    void findAll_void_shouldReturnSubjects() {
+        //preparation
+        when(subjectRepository.findAll())
+                .thenReturn(Arrays.asList(
+                        new Subject(1L, "art"),
+                        new Subject(2L, "math"))
+
+                );
+        List<Subject> expectedSubjects = List.of(
+                new Subject(1L, "art"),
+                new Subject(2L, "math")
+        );
+
+        //action
+        List<Subject> foundSubjects = subjectService.findAll();
+
+        //checking
+        verify(subjectRepository, times(1)).findAll();
+        assertThat(foundSubjects).isEqualTo(expectedSubjects);
+    }
+
+    @Test
+    void findAll_void_shouldReturnVoid() {
+        //preparation
+        when(subjectRepository.findAll()).thenReturn(Collections.emptyList());
+        List<Subject> expectedSubjects = Collections.emptyList();
+
+        //action
+        List<Subject> foundSubjects = subjectService.findAll();
+
+        //checking
+        verify(subjectRepository, times(1)).findAll();
+        assertThat(foundSubjects).isEqualTo(expectedSubjects);
+    }
+
+    @Test
     void findAllDto_void_shouldReturnSubjectsDto() {
         //preparation
         when(subjectRepository.findAll())
@@ -47,7 +83,7 @@ class SubjectServiceImplTest {
         //action
         List<SubjectDto> foundSubjectsDto = subjectService.findAllDto();
 
-        //inspection
+        //checking
         verify(subjectRepository, times(1)).findAll();
         assertThat(foundSubjectsDto).isEqualTo(expectedSubjectsDto);
     }
@@ -61,9 +97,34 @@ class SubjectServiceImplTest {
         //action
         List<SubjectDto> foundSubjectsDto = subjectService.findAllDto();
 
-        //inspection
+        //checking
         verify(subjectRepository, times(1)).findAll();
         assertThat(foundSubjectsDto).isEqualTo(expectedSubjectsDto);
+    }
+
+    @Test
+    void findById_validId_shouldReturnSubject() {
+        //preparation
+        Long validId = 1L;
+        when(subjectRepository.findById(validId)).thenReturn(Optional.of(new Subject(validId, "art")));
+        Subject expectedSubject = new Subject(validId, "art");
+
+        //action
+        Subject foundSubject = subjectService.findById(validId);
+
+        //checking
+        verify(subjectRepository, times(1)).findById(validId);
+        assertThat(foundSubject).isEqualTo(expectedSubject);
+    }
+
+    @Test
+    void findById_notValidId_shouldThrowNotFoundException() {
+        //preparation
+        Long notValidId = 1L;
+        when(subjectRepository.findById(notValidId)).thenReturn(Optional.empty());
+
+        //action - checking
+        assertThrows(NotFoundException.class, () -> subjectService.findById(notValidId));
     }
 
     @Test
@@ -76,7 +137,7 @@ class SubjectServiceImplTest {
         //action
         SubjectDto foundSubjectDto = subjectService.findDtoById(validId);
 
-        //inspection
+        //checking
         verify(subjectRepository, times(1)).findById(validId);
         assertThat(foundSubjectDto).isEqualTo(expectedSubjectDto);
     }
@@ -87,33 +148,8 @@ class SubjectServiceImplTest {
         Long notValidId = 1L;
         when(subjectRepository.findById(notValidId)).thenReturn(Optional.empty());
 
-        //inspection
+        //action - checking
         assertThrows(NotFoundException.class, () -> subjectService.findDtoById(notValidId));
-    }
-
-    @Test
-    void findDtoByName_validName_shouldReturnSubjectDto() {
-        //preparation
-        String validName = "art";
-        when(subjectRepository.findByName(validName)).thenReturn(Optional.of(new Subject(1L, validName)));
-        SubjectDto expectedSubjectDto = new SubjectDto(1L, validName);
-
-        //action
-        SubjectDto foundSubjectDto = subjectService.findDtoByName(validName);
-
-        //inspection
-        verify(subjectRepository, times(1)).findByName(validName);
-        assertThat(foundSubjectDto).isEqualTo(expectedSubjectDto);
-    }
-
-    @Test
-    void findDtoByName_notValidName_shouldThrowNotFoundException() {
-        //preparation
-        String notValidName = "art";
-        when(subjectRepository.findByName(notValidName)).thenReturn(Optional.empty());
-
-        //inspection
-        assertThrows(NotFoundException.class, () -> subjectService.findDtoByName(notValidName));
     }
 
     @Test
@@ -127,7 +163,7 @@ class SubjectServiceImplTest {
         //action
         Subject foundSubject = subjectService.findByName(validName);
 
-        //inspection
+        //checking
         verify(subjectRepository, times(1)).findByName(validName);
         assertThat(foundSubject).isEqualTo(expectedSubject);
     }
@@ -138,8 +174,33 @@ class SubjectServiceImplTest {
         String notValidName = "art";
         when(subjectRepository.findByName(notValidName)).thenReturn(Optional.empty());
 
-        //inspection
+        //action - checking
         assertThrows(NotFoundException.class, () -> subjectService.findByName(notValidName));
+    }
+
+    @Test
+    void findDtoByName_validName_shouldReturnSubjectDto() {
+        //preparation
+        String validName = "art";
+        when(subjectRepository.findByName(validName)).thenReturn(Optional.of(new Subject(1L, validName)));
+        SubjectDto expectedSubjectDto = new SubjectDto(1L, validName);
+
+        //action
+        SubjectDto foundSubjectDto = subjectService.findDtoByName(validName);
+
+        //checking
+        verify(subjectRepository, times(1)).findByName(validName);
+        assertThat(foundSubjectDto).isEqualTo(expectedSubjectDto);
+    }
+
+    @Test
+    void findDtoByName_notValidName_shouldThrowNotFoundException() {
+        //preparation
+        String notValidName = "art";
+        when(subjectRepository.findByName(notValidName)).thenReturn(Optional.empty());
+
+        //action - checking
+        assertThrows(NotFoundException.class, () -> subjectService.findDtoByName(notValidName));
     }
 
     @Test
@@ -157,7 +218,7 @@ class SubjectServiceImplTest {
         //action
         SubjectDto createdSubjectDto = subjectService.create(validSubjectDto);
 
-        //inspection
+        //checking
         verify(subjectRepository, times(1)).save(subjectToSave);
         verify(subjectRepository, times(1)).existsByName(validName);
         assertThat(createdSubjectDto).isEqualTo(expectedSubjectDto);
@@ -170,7 +231,7 @@ class SubjectServiceImplTest {
         when(subjectRepository.existsByName(duplicatedName)).thenReturn(true);
         SubjectDto notValidSubjectDto = new SubjectDto(duplicatedName);
 
-        //inspection
+        //action - checking
         assertThrows(DuplicateException.class, () -> subjectService.create(notValidSubjectDto));
     }
 
@@ -191,7 +252,7 @@ class SubjectServiceImplTest {
         //action
         SubjectDto updatedSubjectDto = subjectService.update(validId, validSubjectDto);
 
-        //inspection
+        //checking
         verify(subjectRepository, times(1)).existsById(validId);
         verify(subjectRepository, times(1)).existsByName(validName);
         assertThat(updatedSubjectDto).isEqualTo(expectedSubjectDto);
@@ -202,10 +263,11 @@ class SubjectServiceImplTest {
         //preparation
         Long notValidId = 1L;
         String validName = "art";
+        SubjectDto validSubjectDto = new SubjectDto(validName);
         when(subjectRepository.existsById(notValidId)).thenReturn(false);
 
-        //inspection
-        assertThrows(NotFoundException.class, () -> subjectService.update(notValidId, new SubjectDto( validName)));
+        //action - checking
+        assertThrows(NotFoundException.class, () -> subjectService.update(notValidId, validSubjectDto));
     }
 
     @Test
@@ -213,11 +275,12 @@ class SubjectServiceImplTest {
         //preparation
         Long validId = 1L;
         String duplicateName = "art";
+        SubjectDto subjectDtoWithDuplication = new SubjectDto(duplicateName);
         when(subjectRepository.existsById(validId)).thenReturn(true);
         when(subjectRepository.existsByName(duplicateName)).thenReturn(true);
 
-        //inspection
-        assertThrows(DuplicateException.class, () -> subjectService.update(validId, new SubjectDto(duplicateName)));
+        //action - checking
+        assertThrows(DuplicateException.class, () -> subjectService.update(validId, subjectDtoWithDuplication));
     }
 
     @Test
@@ -229,7 +292,7 @@ class SubjectServiceImplTest {
         //action
         subjectService.deleteById(validId);
 
-        //inspection
+        //checking
         verify(subjectRepository, times(1)).existsById(validId);
         verify(subjectRepository, times(1)).deleteById(validId);
     }
@@ -240,7 +303,7 @@ class SubjectServiceImplTest {
         Long notValidId = 1L;
         when(subjectRepository.existsById(notValidId)).thenReturn(false);
 
-        //inspection
+        //action - checking
         assertThrows(NotFoundException.class, () -> subjectService.deleteById(notValidId));
     }
 }

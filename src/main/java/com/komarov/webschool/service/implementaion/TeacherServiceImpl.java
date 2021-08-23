@@ -1,5 +1,6 @@
 package com.komarov.webschool.service.implementaion;
 
+import com.komarov.webschool.dto.InnerTeacherDto;
 import com.komarov.webschool.dto.TeacherDto;
 import com.komarov.webschool.entity.Teacher;
 import com.komarov.webschool.exception.NotFoundException;
@@ -13,6 +14,7 @@ import java.util.List;
 public class TeacherServiceImpl implements TeacherService {
     private static final String NOT_FOUND_ID_MESSAGE = "Teacher with id - %d was not found. Choose another or create new teacher with current parameters.";
     private static final String NOT_FOUND_FULL_NAME_MESSAGE = "Teacher with firstName - '%s' and lastName - '%s' was not found. Choose another or create new teacher with current parameters.";
+    private static final String NOT_FOUND_NOT_ENOUGH_INFO = "Teacher was not found. Please enter valid id or valid full name.";
     private final TeacherRepository teacherRepository;
 
     public TeacherServiceImpl(TeacherRepository teacherRepository) {
@@ -20,14 +22,30 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    public List<Teacher> findAll() {
+        return teacherRepository.findAll();
+    }
+
+    @Override
     public List<TeacherDto> findAllDto() {
-        return parse(teacherRepository.findAll());
+        return parse(findAll());
+    }
+
+    @Override
+    public Teacher findById(Long id) {
+        return teacherRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id)));
     }
 
     @Override
     public TeacherDto findDtoById(Long id) {
-        return parse(teacherRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
+        return parse(findById(id));
+    }
+
+    @Override
+    public Teacher findByFullName(String firstName, String lastName) {
+        return teacherRepository.findByFirstNameAndLastName(firstName, lastName)
+                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_FULL_NAME_MESSAGE, firstName, lastName)));
     }
 
     @Override
@@ -36,10 +54,19 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public Teacher findByFullName(String firstName, String lastName) {
-        return teacherRepository.findByFirstNameAndLastName(firstName, lastName)
-                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_FULL_NAME_MESSAGE, firstName, lastName)));
-    }
+    public Teacher findTeacherByInnerTeacherDto(InnerTeacherDto innerTeacherDto) {
+        Long id = innerTeacherDto.getId();
+        String firstName = innerTeacherDto.getFirstName();
+        String lastName = innerTeacherDto.getLastName();
+
+        if (id != null) {
+            return findById(id);
+        } else if (firstName != null && lastName != null) {
+            return findByFullName(firstName, lastName);
+        } else {
+            throw new NotFoundException(NOT_FOUND_NOT_ENOUGH_INFO);
+        }
+}
 
     @Override
     public TeacherDto create(TeacherDto teacherDto) {
@@ -92,7 +119,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     private void checkForExists(Long id) {
-        if(notExists(id)) {
+        if (notExists(id)) {
             throw new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id));
         }
     }

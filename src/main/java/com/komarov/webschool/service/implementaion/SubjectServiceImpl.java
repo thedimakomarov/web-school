@@ -1,5 +1,6 @@
 package com.komarov.webschool.service.implementaion;
 
+import com.komarov.webschool.dto.InnerSubjectDto;
 import com.komarov.webschool.dto.SubjectDto;
 import com.komarov.webschool.entity.Subject;
 import com.komarov.webschool.exception.DuplicateException;
@@ -14,6 +15,7 @@ import java.util.List;
 public class SubjectServiceImpl implements SubjectService {
     private static final String NOT_FOUND_ID_MESSAGE = "Subject with id - %d was not found. Choose another or create new subject with current parameters.";
     private static final String NOT_FOUND_NAME_MESSAGE = "Subject with name - '%s' was not found. Choose another or create new subject with current parameters.";
+    private static final String NOT_FOUND_NOT_ENOUGH_INFO = "Subject was not found. Please enter valid id or valid name.";
     private static final String DUPLICATE_MESSAGE = "Subject with name - %s already exists. Choose another name for subject.";
     private final SubjectRepository subjectRepository;
 
@@ -22,14 +24,30 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
+    public List<Subject> findAll() {
+        return subjectRepository.findAll();
+    }
+
+    @Override
     public List<SubjectDto> findAllDto() {
-        return parse(subjectRepository.findAll());
+        return parse(findAll());
+    }
+
+    @Override
+    public Subject findById(Long id) {
+        return subjectRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id)));
     }
 
     @Override
     public SubjectDto findDtoById(Long id) {
-        return parse(subjectRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
+        return parse(findById(id));
+    }
+
+    @Override
+    public Subject findByName(String subjectName) {
+        return subjectRepository.findByName(subjectName)
+                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_NAME_MESSAGE, subjectName)));
     }
 
     @Override
@@ -38,9 +56,17 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public Subject findByName(String subjectName) {
-        return subjectRepository.findByName(subjectName)
-                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_NAME_MESSAGE, subjectName)));
+    public Subject findSubjectByInnerSubjectDto(InnerSubjectDto innerSubjectDto) {
+        Long id = innerSubjectDto.getId();
+        String subject = innerSubjectDto.getName();
+
+        if(id != null) {
+            return findById(id);
+        } else if(subject != null){
+            return findByName(subject);
+        } else {
+            throw new NotFoundException(NOT_FOUND_NOT_ENOUGH_INFO);
+        }
     }
 
     @Override

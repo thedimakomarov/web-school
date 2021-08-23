@@ -24,22 +24,24 @@ public class LessonDto {
     @NotNull(message = "should be not null")
     private Instant date;
 
-    @NotBlank(message = "should be not empty and not null")
-    private String team;//TODO: make team insert using id, not only by name
+    @Valid
+    @NotNull
+    private InnerTeamDto team;
 
     @Valid
     @NotNull(message = "should be not null")
     private InnerTeacherDto teacher;
 
-    @NotBlank(message = "should be not empty and not null")
-    private String subject;//TODO: make subject insert using id, not only by name
+    @Valid
+    @NotNull(message = "should be not null")
+    private InnerSubjectDto subject;
 
-    public LessonDto(Long id, String topic, Instant date, String team, InnerTeacherDto teacher, String subject) {
+    public LessonDto(Long id, String topic, Instant date, InnerTeamDto team, InnerTeacherDto teacher, InnerSubjectDto subject) {
         this.id = id;
         this.topic = topic.toLowerCase();
         this.date = date;
-        this.team = team.toLowerCase();
+        this.team = team;
         this.teacher = teacher;
-        this.subject = subject.toLowerCase();
+        this.subject = subject;
     }
 }

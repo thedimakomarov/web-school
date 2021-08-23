@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @Getter
@@ -13,9 +14,6 @@ import javax.validation.constraints.Pattern;
 @ToString
 @NoArgsConstructor
 public class InnerStudentDto {
-    //TODO change logic in services
-    //TODO change validations
-    //TODO check all toLowerCase()
 
     private Long id;
 
@@ -28,15 +26,18 @@ public class InnerStudentDto {
     @Pattern(regexp = "\\d{9}", message = "should have 9 characters")
     private String mobile;
 
+    @NotBlank(message = "should be not empty and not null")
+    private String teamName;
+
+    public InnerStudentDto(String firstName, String lastName) {
+        this.firstName = firstName.toLowerCase();
+        this.lastName = lastName.toLowerCase();
+    }
+
     public static InnerStudentDto parse(Student student) {
         return new InnerStudentDto(
                 student.getFirstName(),
                 student.getLastName()
         );
-    }
-
-    public InnerStudentDto(String firstName, String lastName) {
-        this.firstName = firstName.toLowerCase();
-        this.lastName = lastName.toLowerCase();
     }
 }

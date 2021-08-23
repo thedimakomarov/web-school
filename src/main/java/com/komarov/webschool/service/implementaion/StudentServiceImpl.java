@@ -1,5 +1,7 @@
 package com.komarov.webschool.service.implementaion;
 
+import com.komarov.webschool.dto.InnerStudentDto;
+import com.komarov.webschool.dto.InnerTeamDto;
 import com.komarov.webschool.dto.StudentDto;
 import com.komarov.webschool.entity.Student;
 import com.komarov.webschool.entity.Team;
@@ -16,6 +18,7 @@ public class StudentServiceImpl implements StudentService {
     private static final String NOT_FOUND_ID_MESSAGE = "Student with id - %d was not found. Choose another or create new student with current parameters.";
     private static final String NOT_FOUND_FULL_NAME_MESSAGE =
             "Student with firstName - '%s' and lastName - '%s' was not found. Choose another or create new student with current parameters.";
+    private static final String NOT_FOUND_NOT_ENOUGH_INFO = "Student was not found. Please enter valid id or valid full name and valid name of the group.";
     private final StudentRepository studentRepository;
     private final TeamService teamService;
 
@@ -25,25 +28,51 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public List<Student> findAll() {
+        return studentRepository.findAll();
+    }
+
+    @Override
     public List<StudentDto> findDtoAll() {
-        return parse(studentRepository.findAll());
+        return parse(findAll());
+    }
+
+    @Override
+    public Student findById(Long id) {
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id)));
     }
 
     @Override
     public StudentDto findDtoById(Long id) {
-        return parse(studentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_ID_MESSAGE, id))));
+        return parse(findById(id));
     }
 
     @Override
-    public StudentDto findDtoByFullName(String firstName, String lastName) {
-        return parse(findByFullName(firstName, lastName));
-    }
-
-    @Override
-    public Student findByFullName(String firstName, String lastName) {
-        return studentRepository.findByFirstNameAndLastName(firstName, lastName)
+    public Student findByFullNameAndTeamName(String firstName, String lastName, String teamName) {
+        return studentRepository.findByFirstNameAndLastNameAndTeamName(firstName, lastName, teamName)
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_FULL_NAME_MESSAGE, firstName, lastName)));
+    }
+
+    @Override
+    public StudentDto findDtoByFullNameAndTeamName(String firstName, String lastName, String teamName) {
+        return parse(findByFullNameAndTeamName(firstName, lastName, teamName));
+    }
+
+    @Override
+    public Student findStudentByInnerStudentDto(InnerStudentDto innerStudentDto) {
+        Long id = innerStudentDto.getId();
+        String firstName = innerStudentDto.getFirstName();
+        String lastName = innerStudentDto.getLastName();
+        String group = innerStudentDto.getTeamName();
+
+        if(id != null) {
+            return findById(id);
+        } else if(firstName != null && lastName != null && group != null){
+            return findByFullNameAndTeamName(firstName, lastName, group);
+        } else {
+            throw new NotFoundException(NOT_FOUND_NOT_ENOUGH_INFO);
+        }
     }
 
     @Override
@@ -61,10 +90,10 @@ public class StudentServiceImpl implements StudentService {
         return parse(studentRepository.save(student));
     }
 
-    private Student prepareForSaving(StudentDto studentDtoWithoutId) {
-        Team team = teamService.findByName(studentDtoWithoutId.getTeam());
+    private Student prepareForSaving(StudentDto studentDto) {
+        Team team = teamService.findTeamByInnerTeamDto(studentDto.getTeam());
 
-        Student student = parse(studentDtoWithoutId);
+        Student student = parse(studentDto);
         student.setTeam(team);
         return student;
     }
@@ -84,7 +113,7 @@ public class StudentServiceImpl implements StudentService {
                 student.getFirstName(),
                 student.getLastName(),
                 student.getMobile(),
-                student.getTeam()!=null ? student.getTeam().getName() : null
+                InnerTeamDto.parse(student.getTeam())
         );
     }
 

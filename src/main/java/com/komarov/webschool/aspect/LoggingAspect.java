@@ -17,10 +17,9 @@ import java.util.stream.Collectors;
 @Log4j2
 public class LoggingAspect {
 
-    //TODO: check if all method in the service logged
     @Pointcut("execution(public * com.komarov.webschool.service.implementaion.*.*(..))")
     private void allServicePublicMethods() {
-
+        //method as pointcut
     }
 
     @Before("allServicePublicMethods()")

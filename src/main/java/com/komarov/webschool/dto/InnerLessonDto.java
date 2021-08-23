@@ -15,8 +15,6 @@ import java.time.Instant;
 @ToString
 @NoArgsConstructor
 public class InnerLessonDto {
-    //TODO change logic in services
-    //TODO check all toLowerCase()
 
     private Long id;
 
@@ -27,13 +25,21 @@ public class InnerLessonDto {
     private Instant date;
 
     @NotBlank(message = "should be not empty and not null")
-    private String team;
+    private String teamName;
 
     @Null(message = "should be null")
     private InnerTeacherDto teacher;
 
     @NotBlank(message = "should be not empty and not null")
-    private String subject;
+    private String subjectName;
+
+    public InnerLessonDto(String topic, Instant date, String team, InnerTeacherDto teacher, String subject) {
+        this.topic = topic.toLowerCase();
+        this.date = date;
+        this.teamName = team.toLowerCase();
+        this.teacher = teacher;
+        this.subjectName = subject.toLowerCase();
+    }
 
     public static InnerLessonDto parse(Lesson lesson) {
         return new InnerLessonDto(
@@ -43,13 +49,5 @@ public class InnerLessonDto {
                 InnerTeacherDto.parse(lesson.getTeacher()),
                 lesson.getSubject().getName()
         );
-    }
-
-    public InnerLessonDto(String topic, Instant date, String team, InnerTeacherDto teacher, String subject) {
-        this.topic = topic.toLowerCase();
-        this.date = date;
-        this.team = team.toLowerCase();
-        this.teacher = teacher;
-        this.subject = subject.toLowerCase();
     }
 }
