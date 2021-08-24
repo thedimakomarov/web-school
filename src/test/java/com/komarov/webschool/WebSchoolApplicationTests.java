@@ -8,5 +8,6 @@ class WebSchoolApplicationTests {
 
     @Test
     void contextLoads() {
+        //contextLoads
     }
 }

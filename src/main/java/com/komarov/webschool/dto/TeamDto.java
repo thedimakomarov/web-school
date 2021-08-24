@@ -22,4 +22,8 @@ public class TeamDto {
         this.id = id;
         this.name = name.toLowerCase();
     }
+
+    public TeamDto(String name) {
+        this.name = name.toLowerCase();
+    }
 }

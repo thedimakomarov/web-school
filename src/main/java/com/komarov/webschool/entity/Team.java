@@ -29,6 +29,10 @@ public class Team extends AuditEntity<String> implements Serializable {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
+    public Team(String name) {
+        this.name = name;
+    }
+
     public Team(Long id, String name) {
         this.id = id;
         this.name = name;

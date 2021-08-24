@@ -21,7 +21,7 @@ public class InnerTeamDto {
 
     public InnerTeamDto(Long id, String name) {
         this.id = id;
-        this.name = name.toLowerCase();
+        this.name = name==null ? null : name.toLowerCase();
     }
 
     public static InnerTeamDto parse(Team team) {

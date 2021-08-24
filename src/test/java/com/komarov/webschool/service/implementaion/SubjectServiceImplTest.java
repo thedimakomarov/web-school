@@ -1,5 +1,6 @@
 package com.komarov.webschool.service.implementaion;
 
+import com.komarov.webschool.dto.InnerSubjectDto;
 import com.komarov.webschool.dto.SubjectDto;
 import com.komarov.webschool.entity.Subject;
 import com.komarov.webschool.exception.DuplicateException;
@@ -204,6 +205,70 @@ class SubjectServiceImplTest {
     }
 
     @Test
+    void findSubjectByInnerSubjectDto_innerSubjectDtoWithId_shouldReturnSubject() {
+        //preparation
+        Long id = 1L;
+        String name = "art";
+        InnerSubjectDto innerSubjectDtoWithId = new InnerSubjectDto(id, null);
+        Subject foundSubject = new Subject(id, name);
+        when(subjectRepository.findById(id)).thenReturn(Optional.of(foundSubject));
+        Subject expectedSubject = new Subject(id, name);
+
+        //action
+        Subject foundSubjectByInnerTeamDto = subjectService.findSubjectByInnerSubjectDto(innerSubjectDtoWithId);
+
+        //checking
+        verify(subjectRepository, times(1)).findById(id);
+        assertThat(foundSubjectByInnerTeamDto).isEqualTo(expectedSubject);
+    }
+
+    @Test
+    void findSubjectByInnerSubjectDto_innerTeamDtoWithName_shouldReturnTeam() {
+        //preparation
+        Long id = 1L;
+        String name = "art";
+        InnerSubjectDto innerSubjectDtoWithId = new InnerSubjectDto(null, name);
+        Subject foundSubject = new Subject(id, name);
+        when(subjectRepository.findByName(name)).thenReturn(Optional.of(foundSubject));
+        Subject expectedSubject = new Subject(id, name);
+
+        //action
+        Subject foundSubjectByInnerTeamDto = subjectService.findSubjectByInnerSubjectDto(innerSubjectDtoWithId);
+
+        //checking
+        verify(subjectRepository, times(1)).findByName(name);
+        assertThat(foundSubjectByInnerTeamDto).isEqualTo(expectedSubject);
+    }
+
+    @Test
+    void findSubjectByInnerSubjectDto_innerTeamDtoWithWrongFormattedName_shouldReturnTeam() {
+        //preparation
+        Long id = 1L;
+        String wrongFormattedName = "aRt";
+        String rightFormattedName = "art";
+        InnerSubjectDto innerSubjectDtoWithId = new InnerSubjectDto(null, wrongFormattedName);
+        Subject foundSubject = new Subject(id, rightFormattedName);
+        when(subjectRepository.findByName(rightFormattedName)).thenReturn(Optional.of(foundSubject));
+        Subject expectedSubject = new Subject(id, rightFormattedName);
+
+        //action
+        Subject foundSubjectByInnerTeamDto = subjectService.findSubjectByInnerSubjectDto(innerSubjectDtoWithId);
+
+        //checking
+        verify(subjectRepository, times(1)).findByName(rightFormattedName);
+        assertThat(foundSubjectByInnerTeamDto).isEqualTo(expectedSubject);
+    }
+
+    @Test
+    void findSubjectByInnerSubjectDto_innerTeamDtoWithoutAnything_shouldThrowNotFoundException() {
+        //preparation
+        InnerSubjectDto innerSubjectDtoWithId = new InnerSubjectDto(null, null);
+
+        //action - checking
+        assertThrows(NotFoundException.class, () -> subjectService.findSubjectByInnerSubjectDto(innerSubjectDtoWithId));
+    }
+
+    @Test
     void create_validSubjectDto_shouldReturnSubjectDto() {
         //preparation
         Long idCreatedByBd = 1L;
@@ -221,6 +286,28 @@ class SubjectServiceImplTest {
         //checking
         verify(subjectRepository, times(1)).save(subjectToSave);
         verify(subjectRepository, times(1)).existsByName(validName);
+        assertThat(createdSubjectDto).isEqualTo(expectedSubjectDto);
+    }
+
+    @Test
+    void create_validSubjectDtoWithWrongFormat_shouldReturnSubjectDtoWithRightFormat() {
+        //preparation
+        Long idCreatedByBd = 1L;
+        String validWrongFormattedName = "aRt";
+        String validRightFormattedName = "art";
+        Subject subjectToSave = new Subject(validRightFormattedName);
+        Subject savedSubject = new Subject(idCreatedByBd, validRightFormattedName);
+        when(subjectRepository.existsByName(validRightFormattedName)).thenReturn(false);
+        when(subjectRepository.save(subjectToSave)).thenReturn(savedSubject);
+        SubjectDto validSubjectDto = new SubjectDto(validWrongFormattedName);
+        SubjectDto expectedSubjectDto = new SubjectDto(idCreatedByBd, validRightFormattedName);
+
+        //action
+        SubjectDto createdSubjectDto = subjectService.create(validSubjectDto);
+
+        //checking
+        verify(subjectRepository, times(1)).save(subjectToSave);
+        verify(subjectRepository, times(1)).existsByName(validRightFormattedName);
         assertThat(createdSubjectDto).isEqualTo(expectedSubjectDto);
     }
 
@@ -248,13 +335,35 @@ class SubjectServiceImplTest {
         SubjectDto validSubjectDto = new SubjectDto(validName);
         SubjectDto expectedSubjectDto = new SubjectDto(validId, validName);
 
-
         //action
         SubjectDto updatedSubjectDto = subjectService.update(validId, validSubjectDto);
 
         //checking
         verify(subjectRepository, times(1)).existsById(validId);
         verify(subjectRepository, times(1)).existsByName(validName);
+        assertThat(updatedSubjectDto).isEqualTo(expectedSubjectDto);
+    }
+
+    @Test
+    void update_validIdAndValidSubjectDtoWithWrongFormat_shouldReturnSubjectDtoWithRightFormat() {
+        //preparation
+        Long validId = 1L;
+        String validWrongFormattedName = "aRt";
+        String validRightFormattedName = "art";
+        Subject subjectToSave = new Subject(validId, validRightFormattedName);
+        Subject savedSubject = new Subject(validId, validRightFormattedName);
+        when(subjectRepository.existsById(validId)).thenReturn(true);
+        when(subjectRepository.existsByName(validRightFormattedName)).thenReturn(false);
+        when(subjectRepository.save(subjectToSave)).thenReturn(savedSubject);
+        SubjectDto validSubjectDto = new SubjectDto(validWrongFormattedName);
+        SubjectDto expectedSubjectDto = new SubjectDto(validId, validRightFormattedName);
+
+        //action
+        SubjectDto updatedSubjectDto = subjectService.update(validId, validSubjectDto);
+
+        //checking
+        verify(subjectRepository, times(1)).existsById(validId);
+        verify(subjectRepository, times(1)).existsByName(validRightFormattedName);
         assertThat(updatedSubjectDto).isEqualTo(expectedSubjectDto);
     }
 
